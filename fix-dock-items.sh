@@ -42,11 +42,11 @@ else
 	echo "Slack not installed, skipping Dock placement"
 fi
 
-dockutil --add "/Applications/Calculator.app" --after Slack --no-restart "$homeDict"
+dockutil --add "/System/Applications/Calculator.app" --after Slack --no-restart "$homeDict"
 
-dockutil --add "/Applications/Notes.app" --after Calculator --no-restart "$homeDict"
+dockutil --add "/System/Applications/Notes.app" --after Calculator --no-restart "$homeDict"
 
-dockutil --add "/Applications/Calendar.app" --after Notes --no-restart "$homeDict"
+dockutil --add "/System/Applications/Calendar.app" --after Notes --no-restart "$homeDict"
 
 if [ -d "/Applications/Filemaker.app" ] ; then
 	dockutil --add "/Applications/Filemaker.app" --after Slack --no-restart "$homeDict"
