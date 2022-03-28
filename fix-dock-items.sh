@@ -54,7 +54,6 @@ else
 	echo "Safari not installed, skipping Dock placement"
 fi
 
-# "$dockutil" --add "/Applications/Zensum App Store.app" --before "Safari" --no-restart "$homeDict"
 "$dockutil" --add "/Applications/Zensum App Store.app" --restart --position 100 "$homeDict"
 
 exit 0
