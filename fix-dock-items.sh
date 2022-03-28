@@ -54,6 +54,8 @@ else
 	echo "Filemaker not installed, skipping Dock placement"
 fi
 
-dockutil --add "/Applications/Zensum App Store.app" --restart --position 100 "$homeDict"
+dockutil --add "/Applications/Zensum App Store.app" --no-restart --position 100 "$homeDict"
+
+killall Dock
 
 exit 0
