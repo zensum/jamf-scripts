@@ -8,6 +8,7 @@
 
 dockutil=$(which dockutil)
 currentUser=$( echo "show State:/Users/ConsoleUser" | scutil | awk '/Name :/ { print $3 }' )
+homeDict="/Users/zensum/"
 if [ "$currentUser" != "loginwindow" ]; then
     # launchctl asuser "$uid" sudo -u "$currentUser" "$@"
     echo "Running as $currentUser"
@@ -18,10 +19,9 @@ if [ "$currentUser" != "loginwindow" ]; then
     exit 1
   fi
 
-homeDict="/Users/zensum/"
 
-	su – "$loggedInUser" -c '/usr/local/bin/dockutil –remove all –no-restart'
-	sleep 1
+"$dockutil" –-remove all –no-restart
+sleep 1
 
 if [ -d "/Applications/Slack.app" ] ; then
 	"$dockutil" --add "/Applications/Slack.app" --no-restart "$homeDict"
