@@ -19,7 +19,7 @@ if [ "$currentUser" != "loginwindow" ]; then
   fi
 
 
-dockutil –-remove all –no-restart
+dockutil –-remove all –no-restart "$homeDict"
 sleep 1
 
 dockutil --add "/Applications/Safari.app" --position 1 --no-restart "$homeDict"
