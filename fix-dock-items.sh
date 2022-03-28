@@ -20,7 +20,7 @@ runAsUser() {
     echo "no user logged in"
     # uncomment the exit command
     # to make the function exit with an error when no user is logged in
-    # exit 1
+    exit 1
   fi
 }
 
@@ -84,6 +84,6 @@ else
 fi
 
 # runAsUser "$dockutil" --add "/Applications/Zensum App Store.app" --before "Safari" --no-restart
-runAsUser "$dockutil" --add "/Applications/Zensum App Store.app"
+runAsUser "$dockutil" --add "/Applications/Zensum App Store.app" --restart
 
 exit 0
