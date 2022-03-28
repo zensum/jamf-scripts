@@ -16,7 +16,7 @@ uid=$(id -u "$currentUser")
 runAsUser() {
   if [ "$currentUser" != "loginwindow" ]; then
     # launchctl asuser "$uid" sudo -u "$currentUser" "$@"
-    su "$currentUser" "$@"
+    su "$currentUser" -c "$@"
   else
     echo "no user logged in"
     # uncomment the exit command
