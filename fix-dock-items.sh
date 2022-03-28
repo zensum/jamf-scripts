@@ -20,33 +20,8 @@ if [ "$currentUser" != "loginwindow" ]; then
 
 homeDict="/Users/zensum/"
 
-
-###############################################################################
-############################### APPLE DEFAULTS ################################
-###############################################################################
-
-
-"$dockutil" --remove 'Launchpad' --no-restart "$homeDict"
-"$dockutil" --remove 'Messages' --no-restart "$homeDict"
-"$dockutil" --remove 'Launchpad' --no-restart "$homeDict"
-"$dockutil" --remove 'Maps' --no-restart "$homeDict"
-"$dockutil" --remove 'Photos' --no-restart "$homeDict"
-"$dockutil" --remove 'FaceTime' --no-restart "$homeDict"
-"$dockutil" --remove 'Contacts' --no-restart "$homeDict"
-"$dockutil" --remove 'Reminders' --no-restart "$homeDict"
-"$dockutil" --remove 'Notes' --no-restart "$homeDict"
-"$dockutil" --remove 'TV' --no-restart "$homeDict"
-"$dockutil" --remove 'Music' --no-restart "$homeDict"
-"$dockutil" --remove 'Podcasts' --no-restart "$homeDict"
-"$dockutil" --remove 'News' --no-restart "$homeDict"
-"$dockutil" --remove 'Numbers' --no-restart "$homeDict"
-"$dockutil" --remove 'Pages' --no-restart "$homeDict"
-
-
-###############################################################################
-############################### JAMFY INSTALLS ################################
-###############################################################################
-
+	su – "$loggedInUser" -c '/usr/local/bin/dockutil –remove all –no-restart'
+	sleep 1
 
 if [ -d "/Applications/Slack.app" ] ; then
 	"$dockutil" --add "/Applications/Slack.app" --no-restart "$homeDict"
