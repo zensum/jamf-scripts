@@ -80,6 +80,6 @@ else
 fi
 
 # "$dockutil" --add "/Applications/Zensum App Store.app" --before "Safari" --no-restart "$plistFile"
-"$dockutil" --add "/Applications/Zensum App Store.app" --restart --postition 100 "$plistFile"
+"$dockutil" --add "/Applications/Zensum App Store.app" --restart --position 100 "$plistFile"
 
 exit 0
