@@ -35,8 +35,6 @@ dockutil --remove all --no-restart $homeDict
 # done
 sleep 1
 
-dockutil --list $homeDict | awk -F "	" '{print $1}'
-
 dockutil --add "/Applications/Safari.app" --position 1 --no-restart --allhomes
 
 if [ -d "/Applications/Google Chrome.app" ] ; then
