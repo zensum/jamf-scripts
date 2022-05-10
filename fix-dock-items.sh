@@ -61,8 +61,8 @@ dockutil --add "/System/Applications/Notes.app" --after Calculator --no-restart 
 
 dockutil --add "/System/Applications/Calendar.app" --after Notes --no-restart --allhomes
 
-if [ -d "/Applications/Filemaker.app" ] ; then
-	dockutil --add "/Applications/Filemaker.app" --after Slack --no-restart --allhomes
+if [ -d "/Applications/Filemaker Pro 16/Filemaker Pro.app" ] ; then
+	dockutil --add "/Applications/Filemaker Pro 16/Filemaker Pro.app" --after Slack --no-restart --allhomes
 else
 	echo "Filemaker not installed, skipping Dock placement"
 fi
