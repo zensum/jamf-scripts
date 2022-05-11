@@ -6,7 +6,7 @@ interface=`ifconfig | grep -A 1 POINTOPOINT | grep ppp | awk {'print $1'} | sed 
 
 if [[ ! -n $interface ]]; then
     echo "Found no interface to route through"
-    exit 1
+    exit 0
 fi
 
 gateway=`ifconfig | grep -A 1 POINTOPOINT | grep -A 1 $interface | grep -E "inet " | awk {'print $2'}`
