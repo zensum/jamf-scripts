@@ -58,6 +58,9 @@ else
     exit 1
 fi
 
+echo "`date` | Killing Telavox if running."
+killall Telavox || echo
+
 echo "`date` | Removing old app at $APP_LOCATION."
 rm -rf $APP_LOCATION
 
