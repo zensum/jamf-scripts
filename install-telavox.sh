@@ -23,8 +23,6 @@ else
     echo "`date` | No installation found"
 fi
 
-exit 0
-
 TMP_LOCATION=/tmp/telavox.dmg
 echo "`date` | Downloading installer disk image from $DOWNLOAD_URL"
 curl $TELAVOX_URL -L -o $TMP_LOCATION
