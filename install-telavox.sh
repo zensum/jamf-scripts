@@ -48,7 +48,7 @@ echo "`date` | Mounting installer disk image."
 hdiutil mount $TMP_LOCATION -noverify -nobrowse -noautoopen -quiet
 sleep 10
 
-MOUNT_NAME=$(df | grep Telavox | sed '1q' | awk '{print $6,$7,$8,$9}' | sed 's/\ *$//g')
+MOUNT_NAME=$(df | grep Telavox | sed '1q' | sed 's/.*Volumes/\/Volumes/' | sed 's/\ *$//g')
 
 if [ -e "$MOUNT_NAME" ]; then
     echo "`date` | Mounted on $MOUNT_NAME"
