@@ -72,6 +72,17 @@ rm $TMP_LOCATION
 INSTALLED_VERSION=$(defaults read "$APP_LOCATION/Contents/info" CFBundleShortVersionString)
 echo "`date` | Successfully installed $APP_NAME with version $INSTALLED_VERSION"
 
-currentUser=$(echo "show State:/Users/ConsoleUser" | scutil | awk '/Name :/ { print $3 }')
+
+echo "`date` | Trying to move and add settings for $APP_NAME from /tmp"
+
+CURRENT_USER=$(echo "show State:/Users/ConsoleUser" | scutil | awk '/Name :/ { print $3 }')
+
+ditto -xk /tmp/com.glouel.AerialUpdater.zip /Users/$CURRENT_USER/Library/HTTPStorages/.
+ditto -xk /tmp/Aerial.saver.zip /Users/$CURRENT_USER/Library/Screen\ Savers/.
+ditto -xk /tmp/com.glouel.AerialUpdaterAgent.plist.zip /Users/$CURRENT_USER/Library/LaunchAgents/.
+
+/Users/$CURRENT_USER/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSaver/Data/Library/Application\ Support/Aerial
+
+echo "`date` | Added settings for $APP_NAME"
 
 exit 0
