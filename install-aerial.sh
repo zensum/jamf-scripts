@@ -83,12 +83,17 @@ CURRENT_USER=$(echo "show State:/Users/ConsoleUser" | scutil | awk '/Name :/ { p
 echo "`date` | Moving com.glouel.ArialUodater to /Users/$CURRENT_USER/Library/HTTPStorages/"
 mkdir -p /Users/$CURRENT_USER/Library/HTTPStorages/
 ditto -xk /tmp/com.glouel.AerialUpdater.zip /Users/$CURRENT_USER/Library/HTTPStorages/.
+chown -R /Users/$CURRENT_USER/Library/HTTPStorages/com.glouel.AerialUpdater
+
 echo "`date` | Moving /tmp/Aerial.saver to /Users/$CURRENT_USER/Library/Screen\ Savers/."
 mkdir -p /Users/$CURRENT_USER/Library/Screen\ Savers/
 ditto -xk /tmp/Aerial.saver.zip /Users/$CURRENT_USER/Library/Screen\ Savers/.
+chown $CURRENT_USER /Users/$CURRENT_USER/Library/Screen\ Savers/Aerial.saver
+
 echo "`date` | Moving /tmp/com.glouel.AerialUpdaterAgent.plist to /Users/$CURRENT_USER/Library/LaunchAgents/."
 mkdir -p /Users/$CURRENT_USER/Library/LaunchAgents/
 ditto -xk /tmp/com.glouel.AerialUpdaterAgent.plist.zip /Users/$CURRENT_USER/Library/LaunchAgents/.
+chown $CURRENT_USER /Users/$CURRENT_USER/Library/LaunchAgents/com.glouel.AerialUpdaterAgent.plist
 
 echo "`date` | Creating empty folder /Users/$CURRENT_USER/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSaver/Data/Library/Application\ Support/Aerial/ for cache"
 mkdir -p /Users/$CURRENT_USER/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSaver/Data/Library/Application\ Support/Aerial
