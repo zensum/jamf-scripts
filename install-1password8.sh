@@ -14,9 +14,10 @@ case "$(arch)" in
     ;;
 esac
 
-echo "`date` | Fetching 1Password from $URL"
+
+echo "`date` | Fetching 1Password from $URL/$FILE"
 /usr/bin/curl -Ls "${URL}/${FILE}" -o /tmp/"${FILE}"
-/usr/bin/ditto -xk /tmp/"${FILE}" /Applications/.
+
 
 
 old_apps=(
@@ -27,10 +28,18 @@ old_apps=(
 
 for i in "${old_apps[@]}"; do
     if [[ -d "$i" ]]; then
-		echo "`date` | Removing old 1Password installation at $i"
+        echo "`date` | Removing old 1Password installation at $i"
         /bin/rm -rf "$i"
     fi
 done
+
+echo "`date` | Moving new 1Password to /Applications"
+/usr/bin/ditto -xk /tmp/"${FILE}" /Applications/.
+
+APP_LOCATION=/Applications/1Password.app
+INSTALLED_VERSION=$(defaults read "$APP_LOCATION/Contents/info" CFBundleShortVersionString)
+echo "`date` | Installed version is $INSTALLED_VERSION at $APP_LOCATION"
+
 
 old_launchd=(
     "2BUA8C4S2C.com.agilebits.onepassword7-helper"
@@ -39,17 +48,18 @@ old_launchd=(
 
 if [[ ! -z "$user_id" ]]; then
     for l in "${old_launchd[@]}"; do
-		echo "`date` | Removing old helpers"
+        echo "`date` | Removing old helper $l"
         /bin/launchctl asuser "$user_id" /bin/launchctl stop "$l"
         /bin/launchctl asuser "$user_id" /bin/launchctl remove "$l"
     done
 fi
 
-echo "`date` | Killing old 1Password"
+echo "`date` | Killing 1Password"
 /usr/bin/killall "1Password 7"
+/usr/bin/killall "1Password"
 
 echo "`date` | Moving 1Password out of quartine"
-/usr/bin/xattr -r -d com.apple.quarantine "/Applications/1Password.app"
+/usr/bin/xattr -r -d com.apple.quarantine "/Applications/1Password 8.app"
 
 echo "`date` | Cleaning up"
 /bin/rm /tmp/"${FILE}"
