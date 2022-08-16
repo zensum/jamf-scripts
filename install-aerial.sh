@@ -119,12 +119,11 @@ echo "`date` | Added settings for $APP_NAME"
 # adapted from https://support.carouselsignage.com/hc/en-us/articles/360047317971-Jamf-Setup-macOS-Screen-Saver-for-Carousel-Cloud
 huuid=$(system_profiler SPHardwareDataType | awk '/Hardware UUID/ {print $3}')
 ssPlist="/Users/$CURRENT_USER/Library/Preferences/ByHost/com.apple.screensaver.$huuid.plist"
-configPlist="/Users/$CURRENT_USER/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSaver/Data/Library/Preferences/ByHost/com.trms.Carousel-Cloud-Screensaver.$huuid.plist"
 screenSaverFileName="Aerial.saver"
 screenSaverPath="/Users/$CURRENT_USER/Library/Screen Savers"
 
 mkdir -p "/Users/$CURRENT_USER/Library/Preferences/ByHost"
-mkdir -p "/Users/$CURRENT_USER/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSaver/Data/Library/Preferences/ByHost"
+#mkdir -p "/Users/$CURRENT_USER/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSaver/Data/Library/Preferences/ByHost"
 mkdir -p "$screenSaverPath"
 
 # set the screen saver for the current user to the one we installed
