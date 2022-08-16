@@ -167,6 +167,8 @@ fi
 
 chown $CURRENT_USER "$ssPlist"
 
+sudo -l -U $CURRENT_USER launchctl load -w /Users/$CURRENT_USER/Library/LaunchAgents/com.glouel.AerialUpdaterAgent.plist
+
 
 killall cfprefsd
 
