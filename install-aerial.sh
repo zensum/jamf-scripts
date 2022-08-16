@@ -58,7 +58,7 @@ if [ $? -ne 0 ]; then
 fi
 
 if [ -d "$SCREENSAVER_LOCATION" ]; then
-    LATEST_VERSION=$(plutil -p "$TMP_SAVER/Contents/Info.plist" | grep CFBundleShortVersionString)
+    LATEST_VERSION=$(plutil -p "$TMP_SAVER/Contents/Info.plist" | grep CFBundleShortVersionString | awk '{print $3}' | sed 's/[^0-9\.]*//g')
     if [ $? -ne 0 ]; then
         echo "`date` | Could not read latest version of $SCREENSAVER_LOCATION"
         echo "`date` | Deleting current installation at $SCREENSAVER_LOCATION"
