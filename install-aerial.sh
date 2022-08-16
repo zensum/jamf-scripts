@@ -5,7 +5,7 @@ FILE='Aerial.saver.zip'
 APP_NAME='Aerial' # assuming it's a pretty name for jamf ui
 CURRENT_USER=$( echo "show State:/Users/ConsoleUser" | scutil | awk '/Name :/ { print $3 }' )
 SCREENSAVER_FILENAME="Aerial.saver"
-SCREENSAVERS_PATH="/Users/$CURRENT_USER/Library/Screen\ Savers"
+SCREENSAVERS_PATH="/Users/$CURRENT_USER/Library/Screen Savers"
 SCREENSAVER_LOCATION="$SCREENSAVERS_PATH/$SCREENSAVER_FILENAME"
 
 REINSTALL=""
@@ -63,7 +63,7 @@ if [ -d "$SCREENSAVER_LOCATION" ]; then
         echo "`date` | Could not read latest version of $SCREENSAVER_LOCATION"
         echo "`date` | Deleting current installation at $SCREENSAVER_LOCATION"
         rm -rf "$SCREENSAVER_LOCATION"
-        LATEST_VERSION=""
+        LATEST_VERSION="x"
     else
         echo "`date` | Latest version of $APP_NAME is $LATEST_VERSION at $SCREENSAVER_LOCATION"
         if [ $INSTALLED_VERSION == $LATEST_VERSION ] && [ ! $REINSTALL ]; then
@@ -78,9 +78,9 @@ if [ -d "$SCREENSAVER_LOCATION" ]; then
 fi
 
 
-echo "`date` | Moving $TMP_SAVER/$FILE_NAME to /Users/$CURRENT_USER/Library/Screen\ Savers/."
+echo "`date` | Moving $TMP_SAVER/$FILE_NAME to $SCREENSAVERS_PATH"
 mkdir -p "$SCREENSAVERS_PATH"
-mv -f "$TMP_SAVER" "$SCREENSAVERS_PATH/."
+mv -f "$TMP_SAVER" "$SCREENSAVERS_PATH"
 chown -R $CURRENT_USER "$SCREENSAVER_LOCATION"
 
 echo "`date` | Deleting zip file at $TMP_LOCATION for $APP_NAME"
@@ -92,9 +92,10 @@ echo "`date` | Successfully installed $APP_NAME with version $NEWLY_INSTALLED_VE
 
 if [ $INSTALLED_VERSION ] && [ ! $REINSTALL ]; then
     echo "`date` | Update completed for $APP_NAME from $INSTALLED_VERSION to $NEWLY_INSTALLED_VERSION"
+    killall cfprefsd
     exit 0
 fi
-exit 0
+
 # macOS sometimes does not create this folder
 echo "`date` | Creating empty folder /Users/$CURRENT_USER/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSaver/Data/Library/Application\ Support/Aerial/ for cache"
 mkdir -p /Users/$CURRENT_USER/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSaver/Data/Library/Application\ Support/Aerial
@@ -127,6 +128,7 @@ if [ $? -eq 1 ]; then
     /usr/libexec/PlistBuddy -c "Add :moduleDict:path string $SCREENSAVER_LOCATION" $ssPlist
 else
     /usr/libexec/PlistBuddy -c "Set :moduleDict:path $SCREENSAVER_LOCATION" $SCi
+fi
 
 /usr/libexec/PlistBuddy -c "Print showClock" $ssPlist
 if [ $? -eq 1 ]; then
@@ -134,7 +136,6 @@ if [ $? -eq 1 ]; then
 else
     /usr/libexec/PlistBuddy -c "Set showClock NO" $ssPlist
 fi
-
 
 /usr/libexec/PlistBuddy -c "Print idleTime" $ssPlist
 if [ $? -eq 1 ]; then
@@ -151,6 +152,7 @@ if [ $? -eq 1 ]; then
 else
     /usr/libexec/PlistBuddy -c "Set CleanExit YES" $ssPlist
 fi
+
 chown -R $CURRENT_USER "$ssPlist"
 
 # restart settings
