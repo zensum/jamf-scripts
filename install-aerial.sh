@@ -83,7 +83,7 @@ CURRENT_USER=$(echo "show State:/Users/ConsoleUser" | scutil | awk '/Name :/ { p
 echo "`date` | Moving com.glouel.ArialUodater to /Users/$CURRENT_USER/Library/HTTPStorages/"
 mkdir -p /Users/$CURRENT_USER/Library/HTTPStorages/
 ditto -xk /tmp/com.glouel.AerialUpdater.zip /Users/$CURRENT_USER/Library/HTTPStorages/.
-chown -R /Users/$CURRENT_USER/Library/HTTPStorages/com.glouel.AerialUpdater
+chown $CURRENT_USER /Users/$CURRENT_USER/Library/HTTPStorages/com.glouel.AerialUpdater
 
 echo "`date` | Moving /tmp/Aerial.saver to /Users/$CURRENT_USER/Library/Screen\ Savers/."
 mkdir -p /Users/$CURRENT_USER/Library/Screen\ Savers/
@@ -159,9 +159,10 @@ fi
 
 /usr/libexec/PlistBuddy -c "Print moduleDict:idleTime" $ssPlist
 if [ $? -eq 1 ]; then
-    /usr/libexec/PlistBuddy -c "Add :moduleDict:idleTime string NO" $ssPlist
+    # 300 seconds = 5 minutes
+    /usr/libexec/PlistBuddy -c "Add :moduleDict:idleTime int 300" $ssPlist
 else
-    /usr/libexec/PlistBuddy -c "Set :moduleDict:idleTime NO" $ssPlist
+    /usr/libexec/PlistBuddy -c "Set :moduleDict:idleTime 300" $ssPlist
 fi
 
 
