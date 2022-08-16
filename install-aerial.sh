@@ -1,23 +1,40 @@
 #!/bin/bash
 
-URL='https://github.com/glouel/AerialCompanion/releases/latest/download'
-FILE='AerialCompanion.dmg'
-APP_NAME='Aerial Companion'
-APP_LOCATION="/Applications/$APP_NAME.app"
-APP_GREPPER_NAME='Aerial'
+URL='https://github.com/JohnCoates/Aerial/releases/latest/download'
+FILE='Aerial.saver.zip'
+APP_NAME='Aerial' # assuming it's a pretty name for jamf ui
+CURRENT_USER=$( echo "show State:/Users/ConsoleUser" | scutil | awk '/Name :/ { print $3 }' )
+SCREENSAVER_FILENAME="Aerial.saver"
+SCREENSAVERS_PATH="/Users/$CURRENT_USER/Library/Screen\ Savers"
+SCREENSAVER_LOCATION="$SCREENSAVERS_PATH/$SCREENSAVER_FILENAME"
 
-### INSTALLATION
-
-if [ -e $APP_LOCATION ]; then
-    INSTALLED_VERSION=$(defaults read "$APP_LOCATION/Contents/info" CFBundleShortVersionString)
-    echo "`date` | Installed version of $APP_NAME is $INSTALLED_VERSION at $APP_LOCATION"
-else
-    echo "`date` | No current installation of $APP_NAME found as $APP_LOCATION"
+REINSTALL=""
+ARGS=$@
+if [[ " ${ARGS[*]} " =~ " -r " ]]; then
+    echo "`date` | Reinstall requested with -r"
+    REINSTALL=1
 fi
 
+### Check if installed or not
+INSTALLED_VERSION=""
+if [ -d "$SCREENSAVER_LOCATION" ]; then
+    INSTALLED_VERSION=$(defaults read "$SCREENSAVER_LOCATION/Contents/info" CFBundleShortVersionString)
+    if [ $? -ne 0 ]; then
+        echo "`date` | Could not read installed version of $SCREENSAVER_LOCATION"
+        echo "`date` | Deleting current installation at $SCREENSAVER_LOCATION"
+        rm -rf $SCREENSAVER_LOCATION
+        INSTALLED_VERSION=""
+    else
+        echo "`date` | Installed version of $APP_NAME is $INSTALLED_VERSION at $SCREENSAVER_LOCATION"
+    fi
+else
+    echo "`date` | No current installation of $APP_NAME found as $SCREENSAVER_LOCATION"
+fi
 
-echo "`date` | Downloading installer disk image from $URL/$FILE"
-TMP_LOCATION=/tmp/app-install.dmg
+# Grab latest version
+echo "`date` | Downloading zip from $URL/$FILE"
+TMP_SAVER=/tmp/Aerial.saver # this is the unzipped file
+TMP_LOCATION="$TMP_SAVER.zip"
 /usr/bin/curl -Ls "${URL}/${FILE}" -o "$TMP_LOCATION"
 
 if [ -e $TMP_LOCATION ]; then
@@ -27,107 +44,70 @@ else
     exit 1
 fi
 
-while true; do
-    MOUNT_PATH=$(df | grep $APP_GREPPER_NAME | sed '1q' | awk '{print $1}')
-    if [ -z $MOUNT_PATH ]; then
-        break
-    elif [ -e $MOUNT_PATH ]; then
-        echo "`date` | Detaching $MOUNT_PATH."
-        hdiutil detach $MOUNT_PATH -quiet
-    fi
-done
+if [ -d $TMP_SAVER ]; then
+    echo "`date` | Found old screensaver removing $TMP_SAVER"
+    rm -rf $TMP_SAVER
+fi
 
-echo "`date` | Mounting installer disk image for $APP_NAME"
-hdiutil mount $TMP_LOCATION -noverify -nobrowse -noautoopen -quiet
-sleep 10
+# unzip the screensaver
+unzip -q -o "$TMP_LOCATION" -d /tmp # you can remove -v to remove the debug stuff, or "tar xop " instead of unzip if your script runs very very early
 
-MOUNT_NAME=$(df | grep $APP_GREPPER_NAME | sed '1q' | sed 's/.*Volumes/\/Volumes/' | sed 's/\ *$//g')
-
-if [ -e "$MOUNT_NAME" ]; then
-    echo "`date` | Mounted $APP_NAME on $MOUNT_NAME"
-else
-    echo "`date` | Could not mount dmg for $APP_NAME"
-    rm $TMP_LOCATION
+if [ $? -ne 0 ]; then
+    echo "`date` | Unzip failed for $APP_NAME on $TMP_LOCATION to $TMP_SAVER"
     exit 1
 fi
 
-echo "`date` | Killing $APP_NAME if running."
-killall "$APP_NAME" || echo
+if [ -d "$SCREENSAVER_LOCATION" ]; then
+    LATEST_VERSION=$(plutil -p "$TMP_SAVER/Contents/Info.plist" | grep CFBundleShortVersionString)
+    if [ $? -ne 0 ]; then
+        echo "`date` | Could not read latest version of $SCREENSAVER_LOCATION"
+        echo "`date` | Deleting current installation at $SCREENSAVER_LOCATION"
+        rm -rf "$SCREENSAVER_LOCATION"
+        LATEST_VERSION=""
+    else
+        echo "`date` | Latest version of $APP_NAME is $LATEST_VERSION at $SCREENSAVER_LOCATION"
+        if [ $INSTALLED_VERSION == $LATEST_VERSION ] && [ ! $REINSTALL ]; then
+            echo "`date` | Already on the latest version $LATEST_VERSION"
+            exit 0
+        else
+            echo "`date` | Downloaded the latest version $LATEST_VERSION"
+        fi
+        echo "`date` | Removing old version of $APP_NAME at $SCREENSAVER_LOCATION"
+        rm -rf "$SCREENSAVER_LOCATION"
+    fi
+fi
 
-echo "`date` | Removing old version of $APP_NAME at $APP_LOCATION"
-rm -rf $APP_LOCATION
 
-echo "`date` | Copying $APP_NAME to $APP_LOCATION"
-cp -r "$MOUNT_NAME/$APP_NAME.app" /Applications/
+echo "`date` | Moving $TMP_SAVER/$FILE_NAME to /Users/$CURRENT_USER/Library/Screen\ Savers/."
+mkdir -p "$SCREENSAVERS_PATH"
+mv -f "$TMP_SAVER" "$SCREENSAVERS_PATH/."
+chown -R $CURRENT_USER "$SCREENSAVER_LOCATION"
 
-echo "`date` | Changing permissions for $APP_NAME on $APP_LOCATION"
-chown -R root:wheel "$APP_LOCATION"
-chmod -R 755 "$APP_LOCATION"
-
-echo "`date` | Unmounting $APP_NAME disk image"
-hdiutil detach $(df | grep "$APP_GREPPER" | awk '{print $1}') -quiet
-sleep 10
-
-echo "`date` | Deleting disk image for $APP_NAME"
+echo "`date` | Deleting zip file at $TMP_LOCATION for $APP_NAME"
 rm $TMP_LOCATION
 
-INSTALLED_VERSION=$(defaults read "$APP_LOCATION/Contents/info" CFBundleShortVersionString)
-echo "`date` | Successfully installed $APP_NAME with version $INSTALLED_VERSION"
+# Display the screensaver version installed, this works too for .saver ;)
+NEWLY_INSTALLED_VERSION=$(defaults read "$SCREENSAVER_LOCATION/Contents/info" CFBundleShortVersionString)
+echo "`date` | Successfully installed $APP_NAME with version $NEWLY_INSTALLED_VERSION"
 
-### SETTINGS
-
-echo "`date` | Trying to move and add settings for $APP_NAME from /tmp"
-
-CURRENT_USER=$(echo "show State:/Users/ConsoleUser" | scutil | awk '/Name :/ { print $3 }')
-
-echo "`date` | Moving com.glouel.ArialUodater to /Users/$CURRENT_USER/Library/HTTPStorages/"
-mkdir -p /Users/$CURRENT_USER/Library/HTTPStorages/
-ditto -xk /tmp/com.glouel.AerialUpdater.zip /Users/$CURRENT_USER/Library/HTTPStorages/.
-chown $CURRENT_USER /Users/$CURRENT_USER/Library/HTTPStorages/com.glouel.AerialUpdater
-
-echo "`date` | Moving /tmp/Aerial.saver to /Users/$CURRENT_USER/Library/Screen\ Savers/."
-mkdir -p /Users/$CURRENT_USER/Library/Screen\ Savers/
-ditto -xk /tmp/Aerial.saver.zip /Users/$CURRENT_USER/Library/Screen\ Savers/.
-chown $CURRENT_USER /Users/$CURRENT_USER/Library/Screen\ Savers/Aerial.saver
-
-echo "`date` | Moving /tmp/com.glouel.AerialUpdaterAgent.plist to /Users/$CURRENT_USER/Library/LaunchAgents/."
-mkdir -p /Users/$CURRENT_USER/Library/LaunchAgents/
-ditto -xk /tmp/com.glouel.AerialUpdaterAgent.plist.zip /Users/$CURRENT_USER/Library/LaunchAgents/.
-LAUNCHCTL_FILE="/Users/$CURRENT_USER/Library/LaunchAgents/com.glouel.AerialUpdaterAgent.plist"
-chown $CURRENT_USER $LAUNCHCTL_FILE
-
+if [ $INSTALLED_VERSION ] && [ ! $REINSTALL ]; then
+    echo "`date` | Update completed for $APP_NAME from $INSTALLED_VERSION to $NEWLY_INSTALLED_VERSION"
+    exit 0
+fi
+exit 0
+# macOS sometimes does not create this folder
 echo "`date` | Creating empty folder /Users/$CURRENT_USER/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSaver/Data/Library/Application\ Support/Aerial/ for cache"
 mkdir -p /Users/$CURRENT_USER/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSaver/Data/Library/Application\ Support/Aerial
 
 echo "`date` | Added settings for $APP_NAME"
 
-### SCREENSAVER SETTINGS
-# inspiration from https://community.jamf.com/t5/jamf-pro/screen-saver-settings/m-p/249757
-
-## set key items for screensaver
-# /usr/bin/sudo -u $CURRENT_USER /usr/bin/defaults -currentHost write com.apple.screensaver CleanExit -string "YES"
-# /usr/bin/sudo -u $CURRENT_USER /usr/bin/defaults -currentHost write com.apple.screensaver PrefsVersion -int 100
-# /usr/bin/sudo -u $CURRENT_USER /usr/bin/defaults -currentHost write com.apple.screensaver showClock -string "NO"
-# /usr/bin/sudo -u $CURRENT_USER /usr/bin/defaults -currentHost write com.apple.screensaver idleTime -int 300 # wait time before start Screen saver in seconds 300=5 min
-
-# /usr/bin/sudo -u $CURRENT_USER /usr/bin/defaults -currentHost write com.apple.screensaver moduleDict -dict moduleName -string "Customfile" path -string "/Users/$CURRENT_USER/Library/Screen\ Savers/Aerial.saver" type -int 0
-
-# sudo killall -hup cfprefsd
-
-#!/bin/sh
-
 # adapted from https://support.carouselsignage.com/hc/en-us/articles/360047317971-Jamf-Setup-macOS-Screen-Saver-for-Carousel-Cloud
-huuid=$(system_profiler SPHardwareDataType | awk '/Hardware UUID/ {print $3}')
-ssPlist="/Users/$CURRENT_USER/Library/Preferences/ByHost/com.apple.screensaver.$huuid.plist"
-screenSaverFileName="Aerial.saver"
-screenSaverPath="/Users/$CURRENT_USER/Library/Screen Savers"
+HUUID=$(system_profiler SPHardwareDataType | awk '/Hardware UUID/ {print $3}')
+ssPlist="/Users/$CURRENT_USER/Library/Preferences/ByHost/com.apple.screensaver.$HUUID.plist"
 
 mkdir -p "/Users/$CURRENT_USER/Library/Preferences/ByHost"
-#mkdir -p "/Users/$CURRENT_USER/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSaver/Data/Library/Preferences/ByHost"
-mkdir -p "$screenSaverPath"
 
-# set the screen saver for the current user to the one we installed
-
+# set the screen saver for the current user to the one $SCd
 echo "`date` | Adding settings for $CURRENT_USER"
 
 /usr/libexec/PlistBuddy -c "Print moduleDict" $ssPlist
@@ -144,10 +124,9 @@ fi
 
 /usr/libexec/PlistBuddy -c "Print moduleDict:path" $ssPlist
 if [ $? -eq 1 ]; then
-    /usr/libexec/PlistBuddy -c "Add :moduleDict:path string $screenSaverPath/$screenSaverFileName" $ssPlist
+    /usr/libexec/PlistBuddy -c "Add :moduleDict:path string $SCREENSAVER_LOCATION" $ssPlist
 else
-    /usr/libexec/PlistBuddy -c "Set :moduleDict:path $screenSaverPath/$screenSaverFileName" $ssPlist
-fi
+    /usr/libexec/PlistBuddy -c "Set :moduleDict:path $SCREENSAVER_LOCATION" $SCi
 
 /usr/libexec/PlistBuddy -c "Print showClock" $ssPlist
 if [ $? -eq 1 ]; then
@@ -172,16 +151,9 @@ if [ $? -eq 1 ]; then
 else
     /usr/libexec/PlistBuddy -c "Set CleanExit YES" $ssPlist
 fi
+chown -R $CURRENT_USER "$ssPlist"
 
-
-chown $CURRENT_USER "$ssPlist"
-
-echo "`date` | Starting service with launchctl load -w $LAUNCHCTL_FILE"
-sudo -u $CURRENT_USER launchctl unload -w /Users/$CURRENT_USER/Library/LaunchAgents/com.glouel.AerialUpdaterAgent.plist
-
-sudo -u $CURRENT_USER launchctl load -w /Users/$CURRENT_USER/Library/LaunchAgents/com.glouel.AerialUpdaterAgent.plist
-
-
+# restart settings
 killall cfprefsd
 
 exit 0
