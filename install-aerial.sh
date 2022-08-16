@@ -149,20 +149,28 @@ else
     /usr/libexec/PlistBuddy -c "Set :moduleDict:path $screenSaverPath/$screenSaverFileName" $ssPlist
 fi
 
-/usr/libexec/PlistBuddy -c "Print moduleDict:showClock" $ssPlist
+/usr/libexec/PlistBuddy -c "Print showClock" $ssPlist
 if [ $? -eq 1 ]; then
-    /usr/libexec/PlistBuddy -c "Add :moduleDict:showClock string NO" $ssPlist
+    /usr/libexec/PlistBuddy -c "Add showClock string NO" $ssPlist
 else
-    /usr/libexec/PlistBuddy -c "Set :moduleDict:showClock NO" $ssPlist
+    /usr/libexec/PlistBuddy -c "Set showClock NO" $ssPlist
 fi
 
 
-/usr/libexec/PlistBuddy -c "Print moduleDict:idleTime" $ssPlist
+/usr/libexec/PlistBuddy -c "Print idleTime" $ssPlist
 if [ $? -eq 1 ]; then
     # 300 seconds = 5 minutes
-    /usr/libexec/PlistBuddy -c "Add :moduleDict:idleTime int 300" $ssPlist
+    /usr/libexec/PlistBuddy -c "Add idleTime int 300" $ssPlist
 else
-    /usr/libexec/PlistBuddy -c "Set :moduleDict:idleTime 300" $ssPlist
+    /usr/libexec/PlistBuddy -c "Set idleTime 300" $ssPlist
+fi
+
+/usr/libexec/PlistBuddy -c "Print CleanExit" $ssPlist
+if [ $? -eq 1 ]; then
+    # 300 seconds = 5 minutes
+    /usr/libexec/PlistBuddy -c "Add CleanExit string YES" $ssPlist
+else
+    /usr/libexec/PlistBuddy -c "Set CleanExit YES" $ssPlist
 fi
 
 
