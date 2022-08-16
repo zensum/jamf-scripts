@@ -93,7 +93,8 @@ chown $CURRENT_USER /Users/$CURRENT_USER/Library/Screen\ Savers/Aerial.saver
 echo "`date` | Moving /tmp/com.glouel.AerialUpdaterAgent.plist to /Users/$CURRENT_USER/Library/LaunchAgents/."
 mkdir -p /Users/$CURRENT_USER/Library/LaunchAgents/
 ditto -xk /tmp/com.glouel.AerialUpdaterAgent.plist.zip /Users/$CURRENT_USER/Library/LaunchAgents/.
-chown $CURRENT_USER /Users/$CURRENT_USER/Library/LaunchAgents/com.glouel.AerialUpdaterAgent.plist
+LAUNCHCTL_FILE="/Users/$CURRENT_USER/Library/LaunchAgents/com.glouel.AerialUpdaterAgent.plist"
+chown $CURRENT_USER $LAUNCHCTL_FILE
 
 echo "`date` | Creating empty folder /Users/$CURRENT_USER/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSaver/Data/Library/Application\ Support/Aerial/ for cache"
 mkdir -p /Users/$CURRENT_USER/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSaver/Data/Library/Application\ Support/Aerial
@@ -176,7 +177,10 @@ fi
 
 chown $CURRENT_USER "$ssPlist"
 
-sudo -l -U $CURRENT_USER launchctl load -w /Users/$CURRENT_USER/Library/LaunchAgents/com.glouel.AerialUpdaterAgent.plist
+echo "`date` | Starting service with launchctl load -w $LAUNCHCTL_FILE"
+sudo -u $CURRENT_USER launchctl unload -w /Users/$CURRENT_USER/Library/LaunchAgents/com.glouel.AerialUpdaterAgent.plist
+
+sudo -u $CURRENT_USER launchctl load -w /Users/$CURRENT_USER/Library/LaunchAgents/com.glouel.AerialUpdaterAgent.plist
 
 
 killall cfprefsd
