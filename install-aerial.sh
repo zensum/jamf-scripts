@@ -127,7 +127,7 @@ fi
 if [ $? -eq 1 ]; then
     /usr/libexec/PlistBuddy -c "Add :moduleDict:path string $SCREENSAVER_LOCATION" $ssPlist
 else
-    /usr/libexec/PlistBuddy -c "Set :moduleDict:path $SCREENSAVER_LOCATION" $SCi
+    /usr/libexec/PlistBuddy -c "Set :moduleDict:path $SCREENSAVER_LOCATION" $ssPlist
 fi
 
 /usr/libexec/PlistBuddy -c "Print showClock" $ssPlist
@@ -143,14 +143,6 @@ if [ $? -eq 1 ]; then
     /usr/libexec/PlistBuddy -c "Add idleTime int 300" $ssPlist
 else
     /usr/libexec/PlistBuddy -c "Set idleTime 300" $ssPlist
-fi
-
-/usr/libexec/PlistBuddy -c "Print CleanExit" $ssPlist
-if [ $? -eq 1 ]; then
-    # 300 seconds = 5 minutes
-    /usr/libexec/PlistBuddy -c "Add CleanExit string YES" $ssPlist
-else
-    /usr/libexec/PlistBuddy -c "Set CleanExit YES" $ssPlist
 fi
 
 chown -R $CURRENT_USER "$ssPlist"
