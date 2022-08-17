@@ -147,7 +147,147 @@ fi
 
 chown -R $CURRENT_USER "$ssPlist"
 
+SETTINGS_FOLDER="/Users/$CURRENT_USER/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSaver/Data/Library/Preferences/ByHost/"
+PROPERTY_LIST="$SETTINGS_FOLDER/com.JohnCoates.aerial.$HUUID.plist"
+
+if [ ! -f "$PROPERTY_LIST" ]; then
+    echo "`date` | Creating empty property list at $PROPERTY_LIST"
+    mkdir -p "$SETTINGS_FOLDER"
+    touch "$PROPERTY_LIST"
+else
+    if [ ! $REINSTALL ]; then
+        echo "`date` | Property list already exists at $PROPERTY_LIST"
+        exit 0
+    else
+        echo "`date` | Removing old settings at $PROPERTY_LIST"
+        rm $PROPERTY_LIST
+    fi
+fi
+
+
+echo "`date` | Writing new $APP_NAME settings"
+cat > "$PROPERTY_LIST" <<EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>LayerClock</key>
+	<string>{
+  "clockFormat" : 0,
+  "corner" : 3,
+  "displays" : 0,
+  "fontName" : "Helvetica Neue Medium",
+  "fontSize" : 50,
+  "hideAmPm" : false,
+  "isEnabled" : false,
+  "showSeconds" : true
+}</string>
+	<key>LayerLocation</key>
+	<string>{
+  "corner" : 3,
+  "displays" : 0,
+  "fontName" : "HelveticaNeue-Medium",
+  "fontSize" : 18,
+  "isEnabled" : true,
+  "time" : 0
+}</string>
+	<key>appleMusicStoreFront</key>
+	<string>Sweden</string>
+	<key>cacheLimit</key>
+	<integer>10</integer>
+	<key>darkModeNightOverride</key>
+	<true/>
+	<key>debugMode</key>
+	<false/>
+	<key>dimBrightness</key>
+	<false/>
+	<key>durationCache</key>
+	<dict/>
+	<key>enableManagement</key>
+	<true/>
+	<key>firstTimeSetup</key>
+	<true/>
+	<key>highQualityTextRendering</key>
+	<true/>
+	<key>intCachePeriodicity</key>
+	<integer>1</integer>
+	<key>intRefreshPeriodicity</key>
+	<integer>0</integer>
+	<key>intVideoFormat</key>
+	<integer>4</integer>
+	<key>lastVideoCheck</key>
+	<string>2022-08-10</string>
+	<key>layers</key>
+	<string>[
+  "message",
+  "clock",
+  "date",
+  "location",
+  "battery",
+  "weather",
+  "countdown",
+  "timer",
+  "music"
+]</string>
+	<key>newShouldPlayString</key>
+	<array>
+		<string>location:Alabama</string>
+		<string>location:California</string>
+		<string>location:China</string>
+		<string>location:Dubai</string>
+		<string>location:England</string>
+		<string>location:Florida</string>
+		<string>location:Grand Canyon</string>
+		<string>location:Greenland</string>
+		<string>location:Hawaii</string>
+		<string>location:Hong Kong</string>
+		<string>location:Iceland</string>
+		<string>location:Italy</string>
+		<string>location:Liwa</string>
+		<string>location:London</string>
+		<string>location:Los Angeles</string>
+		<string>location:Nevada</string>
+		<string>location:New York</string>
+		<string>location:Oregon</string>
+		<string>location:Patagonia</string>
+		<string>location:San Francisco</string>
+		<string>location:Scotland</string>
+		<string>location:Sea</string>
+		<string>location:Space</string>
+		<string>location:Texas</string>
+		<string>location:Yosemite</string>
+	</array>
+	<key>sourcesEnabled</key>
+	<dict>
+		<key>From Joshua Michaels &amp; Hal Bergman</key>
+		<false/>
+		<key>tvOS 10</key>
+		<false/>
+		<key>tvOS 11</key>
+		<false/>
+		<key>tvOS 12</key>
+		<false/>
+		<key>tvOS 13</key>
+		<false/>
+		<key>tvOS 15</key>
+		<true/>
+	</dict>
+	<key>timeMode</key>
+	<integer>0</integer>
+</dict>
+</plist>
+EOF
+
+chown -R "$CURRENT_USER" "$SETTINGS_FOLDER"
+chown $CURRENT_USER "$PROPERTY_LIST"
+
+echo "`date` | Adding settings for $CURRENT_USER"
+SET_SETTINGS=$(/usr/libexec/PlistBuddy -c "Print" "$PROPERTY_LIST")
+echo "`date` | Settings are now $SET_SETTINGS"
+
 # restart settings
 killall cfprefsd
+
+echo "`date` | $APP_NAME installation complete"
 
 exit 0
