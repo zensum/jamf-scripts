@@ -37,50 +37,48 @@ TMP_SAVER=/tmp/Aerial.saver # this is the unzipped file
 TMP_LOCATION="$TMP_SAVER.zip"
 /usr/bin/curl -Ls "${URL}/${FILE}" -o "$TMP_LOCATION"
 
-if [ -e $TMP_LOCATION ]; then
+if [ ! -e $TMP_LOCATION ] || [ $? -ne 0 ]; then
     echo "`date` | Downloaded $APP_NAME to $TMP_LOCATION"
 else
     echo "`date` | Could not find any downloads for $APP_NAME on $TMP_LOCATION"
     exit 1
 fi
 
-if [ -d $TMP_SAVER ]; then
-    echo "`date` | Found old screensaver removing $TMP_SAVER"
-    rm -rf $TMP_SAVER
-fi
-
-# unzip the screensaver
-unzip -q -o "$TMP_LOCATION" -d /tmp # you can remove -v to remove the debug stuff, or "tar xop " instead of unzip if your script runs very very early
-
-if [ $? -ne 0 ]; then
-    echo "`date` | Unzip failed for $APP_NAME on $TMP_LOCATION to $TMP_SAVER"
-    exit 1
-fi
+# if [ -d "$SCREENSAVER_LOCATION" ]; then
+#     LATEST_VERSION=$(plutil -p "$TMP_SAVER/Contents/Info.plist" | grep CFBundleShortVersionString | awk '{print $3}' | sed 's/[^0-9\.]*//g')
+#     if [ $? -ne 0 ]; then
+#         echo "`date` | Could not read latest version of $SCREENSAVER_LOCATION"
+#         echo "`date` | Deleting current installation at $SCREENSAVER_LOCATION"
+#         rm -rf "$SCREENSAVER_LOCATION"
+#         LATEST_VERSION="x"
+#     else
+#         echo "`date` | Latest version of $APP_NAME is $LATEST_VERSION at $SCREENSAVER_LOCATION"
+#         if [ $INSTALLED_VERSION == $LATEST_VERSION ] && [ ! $REINSTALL ]; then
+#             echo "`date` | Already on the latest version $LATEST_VERSION"
+#             exit 0
+#         else
+#             echo "`date` | Downloaded the latest version $LATEST_VERSION"
+#         fi
+#         echo "`date` | Removing old version of $APP_NAME at $SCREENSAVER_LOCATION"
+#         rm -rf "$SCREENSAVER_LOCATION"
+#     fi
+# fi
 
 if [ -d "$SCREENSAVER_LOCATION" ]; then
-    LATEST_VERSION=$(plutil -p "$TMP_SAVER/Contents/Info.plist" | grep CFBundleShortVersionString | awk '{print $3}' | sed 's/[^0-9\.]*//g')
-    if [ $? -ne 0 ]; then
-        echo "`date` | Could not read latest version of $SCREENSAVER_LOCATION"
-        echo "`date` | Deleting current installation at $SCREENSAVER_LOCATION"
-        rm -rf "$SCREENSAVER_LOCATION"
-        LATEST_VERSION="x"
-    else
-        echo "`date` | Latest version of $APP_NAME is $LATEST_VERSION at $SCREENSAVER_LOCATION"
-        if [ $INSTALLED_VERSION == $LATEST_VERSION ] && [ ! $REINSTALL ]; then
-            echo "`date` | Already on the latest version $LATEST_VERSION"
-            exit 0
-        else
-            echo "`date` | Downloaded the latest version $LATEST_VERSION"
-        fi
-        echo "`date` | Removing old version of $APP_NAME at $SCREENSAVER_LOCATION"
-        rm -rf "$SCREENSAVER_LOCATION"
-    fi
+    echo "`date` | Removing old version of $APP_NAME at $SCREENSAVER_LOCATION"
+    rm -rf "$SCREENSAVER_LOCATION"
 fi
-
 
 echo "`date` | Moving $TMP_SAVER/$FILE_NAME to $SCREENSAVERS_PATH"
 mkdir -p "$SCREENSAVERS_PATH"
-mv -f "$TMP_SAVER" "$SCREENSAVERS_PATH"
+
+ditto -xk "$TMP_LOCATION" "$SCREENSAVERS_PATH"
+
+if [ $? -ne 0 ]; then
+    echo "`date` | Unzip and move failed for $APP_NAME on $TMP_LOCATION to $TMP_SAVER"
+    exit 1
+fi
+
 chown -R $CURRENT_USER "$SCREENSAVER_LOCATION"
 
 echo "`date` | Deleting zip file at $TMP_LOCATION for $APP_NAME"
@@ -110,6 +108,20 @@ mkdir -p "/Users/$CURRENT_USER/Library/Preferences/ByHost"
 
 # set the screen saver for the current user to the one $SCd
 echo "`date` | Adding settings for $CURRENT_USER"
+
+/usr/libexec/PlistBuddy -c "Print askForPasswordDelay" $ssPlist
+if [ $? -eq 1 ]; then
+    /usr/libexec/PlistBuddy -c "Add askForPasswordDelay int 0" $ssPlist
+else
+    /usr/libexec/PlistBuddy -c "Set askForPasswordDelay 0" $ssPlist
+fi
+
+/usr/libexec/PlistBuddy -c "Print askForPassword" $ssPlist
+if [ $? -eq 1 ]; then
+    /usr/libexec/PlistBuddy -c "Add askForPassword bool true" $ssPlist
+else
+    /usr/libexec/PlistBuddy -c "Set askForPasswordDelay true" $ssPlist
+fi
 
 /usr/libexec/PlistBuddy -c "Print moduleDict" $ssPlist
 if [ $? -eq 1 ]; then
