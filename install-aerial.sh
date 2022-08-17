@@ -142,6 +142,13 @@ else
     /usr/libexec/PlistBuddy -c "Set :moduleDict:path $SCREENSAVER_LOCATION" $ssPlist
 fi
 
+/usr/libexec/PlistBuddy -c "Print moduleDict:type" $ssPlist
+if [ $? -eq 1 ]; then
+    /usr/libexec/PlistBuddy -c "Add :moduleDict:type int 0" $ssPlist
+else
+    /usr/libexec/PlistBuddy -c "Set :moduleDict:type 0" $ssPlist
+fi
+
 /usr/libexec/PlistBuddy -c "Print showClock" $ssPlist
 if [ $? -eq 1 ]; then
     /usr/libexec/PlistBuddy -c "Add showClock string NO" $ssPlist
