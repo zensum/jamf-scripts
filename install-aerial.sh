@@ -81,6 +81,9 @@ echo "`date` | Moving $TMP_SAVER/$FILE_NAME to $SCREENSAVERS_PATH"
 mkdir -p "$SCREENSAVERS_PATH"
 mv -f "$TMP_SAVER" "$SCREENSAVERS_PATH"
 
+echo "`date` | Whitelisting $SCREENSAVER_LOCATION for GateKeeper"
+/usr/bin/xattr -r -d com.apple.quarantine "$SCREENSAVER_LOCATION"
+
 # chmod -777 "$SCREENSAVER_LOCATION"
 
 echo "`date` | Deleting zip file at $TMP_LOCATION for $APP_NAME"
