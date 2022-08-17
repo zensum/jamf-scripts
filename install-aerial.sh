@@ -147,7 +147,7 @@ fi
 
 chown -R $CURRENT_USER "$ssPlist"
 
-SETTINGS_FOLDER="/Users/$CURRENT_USER/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSaver/Data/Library/Preferences/ByHost/"
+SETTINGS_FOLDER="/Users/$CURRENT_USER/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSaver/Data/Library/Preferences/ByHost"
 PROPERTY_LIST="$SETTINGS_FOLDER/com.JohnCoates.aerial.$HUUID.plist"
 
 if [ ! -f "$PROPERTY_LIST" ]; then
@@ -166,117 +166,82 @@ fi
 
 
 echo "`date` | Writing new $APP_NAME settings"
-cat > "$PROPERTY_LIST" <<EOF
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-	<key>LayerClock</key>
-	<string>{
-  "clockFormat" : 0,
-  "corner" : 3,
-  "displays" : 0,
-  "fontName" : "Helvetica Neue Medium",
-  "fontSize" : 50,
-  "hideAmPm" : false,
-  "isEnabled" : false,
-  "showSeconds" : true
-}</string>
-	<key>LayerLocation</key>
-	<string>{
-  "corner" : 3,
-  "displays" : 0,
-  "fontName" : "HelveticaNeue-Medium",
-  "fontSize" : 18,
-  "isEnabled" : true,
-  "time" : 0
-}</string>
-	<key>appleMusicStoreFront</key>
-	<string>Sweden</string>
-	<key>cacheLimit</key>
-	<integer>10</integer>
-	<key>darkModeNightOverride</key>
-	<true/>
-	<key>debugMode</key>
-	<false/>
-	<key>dimBrightness</key>
-	<false/>
-	<key>durationCache</key>
-	<dict/>
-	<key>enableManagement</key>
-	<true/>
-	<key>firstTimeSetup</key>
-	<true/>
-	<key>highQualityTextRendering</key>
-	<true/>
-	<key>intCachePeriodicity</key>
-	<integer>1</integer>
-	<key>intRefreshPeriodicity</key>
-	<integer>0</integer>
-	<key>intVideoFormat</key>
-	<integer>4</integer>
-	<key>lastVideoCheck</key>
-	<string>2022-08-10</string>
-	<key>layers</key>
-	<string>[
-  "message",
-  "clock",
-  "date",
-  "location",
-  "battery",
-  "weather",
-  "countdown",
-  "timer",
-  "music"
-]</string>
-	<key>newShouldPlayString</key>
-	<array>
-		<string>location:Alabama</string>
-		<string>location:California</string>
-		<string>location:China</string>
-		<string>location:Dubai</string>
-		<string>location:England</string>
-		<string>location:Florida</string>
-		<string>location:Grand Canyon</string>
-		<string>location:Greenland</string>
-		<string>location:Hawaii</string>
-		<string>location:Hong Kong</string>
-		<string>location:Iceland</string>
-		<string>location:Italy</string>
-		<string>location:Liwa</string>
-		<string>location:London</string>
-		<string>location:Los Angeles</string>
-		<string>location:Nevada</string>
-		<string>location:New York</string>
-		<string>location:Oregon</string>
-		<string>location:Patagonia</string>
-		<string>location:San Francisco</string>
-		<string>location:Scotland</string>
-		<string>location:Sea</string>
-		<string>location:Space</string>
-		<string>location:Texas</string>
-		<string>location:Yosemite</string>
-	</array>
-	<key>sourcesEnabled</key>
-	<dict>
-		<key>From Joshua Michaels &amp; Hal Bergman</key>
-		<false/>
-		<key>tvOS 10</key>
-		<false/>
-		<key>tvOS 11</key>
-		<false/>
-		<key>tvOS 12</key>
-		<false/>
-		<key>tvOS 13</key>
-		<false/>
-		<key>tvOS 15</key>
-		<true/>
-	</dict>
-	<key>timeMode</key>
-	<integer>0</integer>
-</dict>
-</plist>
-EOF
+BASE64_CONFIG='YnBsaXN0MDDfEBMBAgMEBQYHCAkKCwwNDg8QERITFBUWFxgZGhoaHR4fLBYXjo8aql1MYXllckxv
+Y2F0aW9uWmNhY2hlTGltaXRYdGltZU1vZGVZZGVidWdNb2RlXxAUYXBwbGVNdXNpY1N0b3JlRnJv
+bnRWbGF5ZXJzXxAYaGlnaFF1YWxpdHlUZXh0UmVuZGVyaW5nXxAQZW5hYmxlTWFuYWdlbWVudF5m
+aXJzdFRpbWVTZXR1cF8QE2ludENhY2hlUGVyaW9kaWNpdHleaW50VmlkZW9Gb3JtYXRec291cmNl
+c0VuYWJsZWRdZHVyYXRpb25DYWNoZV8QFWludFJlZnJlc2hQZXJpb2RpY2l0eV1kaW1CcmlnaHRu
+ZXNzXmxhc3RWaWRlb0NoZWNrXxATbmV3U2hvdWxkUGxheVN0cmluZ18QFWRhcmtNb2RlTmlnaHRP
+dmVycmlkZVpMYXllckNsb2NrXxCCewogICJjb3JuZXIiIDogMywKICAiZGlzcGxheXMiIDogMCwK
+ICAiZm9udE5hbWUiIDogIkhlbHZldGljYU5ldWUtTWVkaXVtIiwKICAiZm9udFNpemUiIDogMTgs
+CiAgImlzRW5hYmxlZCIgOiB0cnVlLAogICJ0aW1lIiA6IDAKfRAKEAAIVlN3ZWRlbl8QcVsKICAi
+bWVzc2FnZSIsCiAgImNsb2NrIiwKICAiZGF0ZSIsCiAgImxvY2F0aW9uIiwKICAiYmF0dGVyeSIs
+CiAgIndlYXRoZXIiLAogICJjb3VudGRvd24iLAogICJ0aW1lciIsCiAgIm11c2ljIgpdCQkJEAEQ
+BNYgISIjJCUXFxcXGhdXdHZPUyAxMld0dk9TIDExV3R2T1MgMTBfECJGcm9tIEpvc2h1YSBNaWNo
+YWVscyAmIEhhbCBCZXJnbWFuV3R2T1MgMTVXdHZPUyAxMwgICAgJCN8QMC0uLzAxMjM0NTY3ODk6
+Ozw9Pj9AQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVpbXF1eX2BhYmNkZWZnaGlqa2xtbm9wcXJz
+dHV2d3h5ent8fX5/gIGCg4SFhoeIiYqLjF8QJEM4NTU5ODgzLTZGM0UtNEFGMi04OTYwLTkwMzcx
+MENENDdCN18QJDU4MUE0RjFBLTJCNkQtNDY4Qy1BMUJFLTZGNDczRjA2RDEwQl8QJEFFMDExNUFF
+LUM1M0ItNERCOS1CMTJGLUNBNEI3QjYzMENDOV8QJEFGQTIyQzA4LUE0ODYtNENFOC05QTEzLUUz
+NTVCNkMzODU1OV8QJDg1Q0U3N0JGLTM0MTMtNEE3Qi05QjBGLTczMkU5NjIyOUE3M18QJDgyMTc1
+QzFGLTE1M0MtNEVDOC1BRTM3LTI4NjBFQTgyODAwNF8QJDhDMzFCMDZGLTkxQTQtNEY3Qy05M0VE
+LTU2MTQ2RDdGNDhCOV8QJDc3MTlCNDhBLTIwMDUtNDAxMS05MjgwLTJGNjRFRUM2RkQ5MV8QJDEw
+ODgyMTdDLTE0MTAtNENGNy1CREU5LThGNTczQTREQkNEOV8QJERBRDgyRENFLUYzQUUtNEFFQy04
+QTc5LTE2OTRENDEyRkMwQV8QJDc4OTExQjdFLTNDNjktNDdBRC1CNjM1LTlDMjQ4NkY2MzAxRF8Q
+JDdGNEMyNkMyLTY3QzItNEMzQS04RjA3LThBN0JGNjE0OEM5N18QJEJBNEVDQTExLTU5MkYtNDcy
+Ny05MjIxLUQyQTMyQTE2RUIyOF8QJEVDNjc3MjZBLTgyMTItNEM1RS04M0NGLTg0MTI5MzI3NDBE
+Ml8QJDRBRDk5OTA3LTlFNzYtNDA4RC1BN0ZDLTg0MjlGRjAxNDIwMV8QJEVFNTMzRkJELTkwQUUt
+NDE5QS1BRDEzLUQ3QTYwRTIwMTVENl8QJDIyMTYyQTlCLURCOTAtNDUxNy04NjdDLUM2NzZCQzNF
+OEU5NV8QJDgzQzY1QzkwLTI3MEMtNDQ5MC05QzY5LUY1MUZFMDNEN0YwNl8QJDI3QTM3QjBGLTcz
+OEQtNDY0NC1BN0E0LUUzM0U3QTZDMTE3NV8QJEU0ODdDNkVGLUIzRkItNDI3Qi1BMkJFLThDQkE2
+MEY5MDJGMF8QJDNGRkEyQTk3LTdEMjgtNDlFQS1BQTM5LTVCQzkwNTFCMjc0NV8QJEUzMzRBNkQy
+LTcxNDUtNDdDOC05QjAwLUMyMERFRDA4QjJENV8QJDQxMDlENDJBLUQ3MTctNDZBNy1BOUEyLUZF
+NTNBODJCMjVDMF8QJEREMjY2RTFGLTVERjItNENEQi1BMkVCLTI2Q0UzNTY2NDY1N18QJDQ5OTk5
+NUZBLUU1MUEtNEFDRS04REZELUJERjhBRkY2Qzk0M18QJDAyNDg5MURFLUI3RjYtNDE4Ny1CRkUw
+LUU2RDIzNzcwMkVGMF8QJDlDQ0I4Mjk3LUU5RjUtNDY5OS1BRTFGLTg5MENGQkQ1RTI5Q18QJDgx
+Q0E1QUNELUU2ODItNEQ4Qi1BOTQ4LTBGMTQ3RUI2RUQ0Rl8QJDdDNjQzQTM5LUMwQjItNEJBMC04
+QkMyLTJFQUE0N0NDNTgwRV8QJDNCQTBDRkM3LUU0NjAtNEI1OS1BODE3LUI5N0Y5RUJCOUI4OV8Q
+JDY0RDExREFCLTNCNTctNEYxNC1BRDJGLUU1OUE5MjgyRkE0NF8QJDJCMzBFMzI0LUU0RkYtNEND
+MS1CQTQ1LUE5NThDMkQyQjJFQ18QJEE1QUFGRjVELTg4ODctNDJCQi04QUZELTg2N0VGNTU3RUQ4
+NV8QJDJGNTJFMzRDLTM5RDQtNEFCMS05MDI1LThGNzE0MUZBQTcyMF8QJDA0NEFENTZDLUExMDct
+NDFCMi05MENDLUU2MENDQUNGQkNGNV8QJDE0OUU3Nzk1LURCREEtNEY1RC1CMzlBLTE0NzEyRjg0
+MTExOF8QJDg5QjE2NDNCLTA2REQtNERFQy1CMUIwLTc3NDQ5M0IwRjdCN18QJDQ0MTY2QzM5LTg1
+NjYtNEVDQS1CRDE2LTQzMTU5NDI5QjUyRl8QJERERTUwQzc3LUI3Q0ItNDQ4OC05RUIxLUQxQjEz
+QkYyMUZGRV8QJEU5OTFBQzBDLUYyNzItNDREOC04OEYzLTA1RjQ0RURGRTNBRV8QJEYwMjM2RUM1
+LUVFNzItNDA1OC1BNkNFLTFGN0QyRTgyNTNCRl8QJEM2REM0RTU0LTExMzAtNDRGOC1BRjZGLUE1
+NTFEOEU4QTE4MV8QJDhEMDRENzBGLTczOEItNDQxRC04RDQzLUFGNDZCMkJGODA2Ml8QJEI4NzZC
+NjQ1LTM5NTUtNDIwRS05OURGLTYwMTM5RTQ1MUNGM18QJEVDM0RDOTU3LUQ0QzItNDczMi1BQUNF
+LTdEMEMwRjM5MEVDOF8QJDBDNzQ3QzI5LTRCRjgtNDNGNi1BNUNDLTJFMDEyRTU1NTM0MV8QJDM1
+NjkzQUVBLUY4QzQtNEE4MC1CNzdELUM5NEIyMEE2ODk1Nl8QJDUzN0E0REFCLTgzQjAtNEI2Ni1C
+Q0QxLTA1RTVEQkI0QTI2OCNAeka4UeuFHyNAagrtS4DAPSNAgORR64UeuCNAZoXCj1wo9iNAciUs
+goafMyNAbiFOO801qCNAVRZ1sRVvjCNAcrmWu5jH4yNAakfJqORIoyNAgYGLMhuUaSNAaka4UeuF
+HyNAdQXo7QWZDiNAessecmo5EiNAcT+cd5prUSNAZ8cl0doLMiNAdQVgQYk3TCNAcgUkUV+1uiNA
+bPutzpMu1SNAbM3EMspXqCNAcsTMzMzMzSNAfCczMzMzMyNAfVosX5LF+SNAhAa4uscQyyNAZ+Yc
+rAgxJyNAdQVgQYk3TCNAhKVHrhR64SNAadrhAcZiCCNAdBjfgUwMkCNAakfJqORIoyNAfgg2v/dD
+CiNAaxohllK9PCNAYQifeI8WQSNAdoZLOtiKuCNAgsTMzMzMzSNAbgi/a3OkzCNAWD2qh7bRcSNA
+a7k5NRyJFCNAZcnWxFW+MSNAdAnsv7FbVyNAfgeuFHrhSCNAdQXo7QWZDiNAZ7HLBmrE4iNAgGNk
+Ja7mMiNAfg8ndUg55CNAap001qFh5SNAfWIua9yAVyNAaka4UeuFHyNAXPIRv9RPMAhaMjAyMi0w
+OC0xN68QGZCRkpOUlZaXmJmam5ydnp+goaKjpKWmp6hfEBBsb2NhdGlvbjpBbGFiYW1hXxATbG9j
+YXRpb246Q2FsaWZvcm5pYV5sb2NhdGlvbjpDaGluYV5sb2NhdGlvbjpEdWJhaV8QEGxvY2F0aW9u
+OkVuZ2xhbmRfEBBsb2NhdGlvbjpGbG9yaWRhXxAVbG9jYXRpb246R3JhbmQgQ2FueW9uXxASbG9j
+YXRpb246R3JlZW5sYW5kXxAPbG9jYXRpb246SGF3YWlpXxASbG9jYXRpb246SG9uZyBLb25nXxAQ
+bG9jYXRpb246SWNlbGFuZF5sb2NhdGlvbjpJdGFseV1sb2NhdGlvbjpMaXdhXxAPbG9jYXRpb246
+TG9uZG9uXxAUbG9jYXRpb246TG9zIEFuZ2VsZXNfEA9sb2NhdGlvbjpOZXZhZGFfEBFsb2NhdGlv
+bjpOZXcgWW9ya18QD2xvY2F0aW9uOk9yZWdvbl8QEmxvY2F0aW9uOlBhdGFnb25pYV8QFmxvY2F0
+aW9uOlNhbiBGcmFuY2lzY29fEBFsb2NhdGlvbjpTY290bGFuZFxsb2NhdGlvbjpTZWFebG9jYXRp
+b246U3BhY2VebG9jYXRpb246VGV4YXNfEBFsb2NhdGlvbjpZb3NlbWl0ZQlfELl7CiAgImNsb2Nr
+Rm9ybWF0IiA6IDAsCiAgImNvcm5lciIgOiAzLAogICJkaXNwbGF5cyIgOiAwLAogICJmb250TmFt
+ZSIgOiAiSGVsdmV0aWNhIE5ldWUgTWVkaXVtIiwKICAiZm9udFNpemUiIDogNTAsCiAgImhpZGVB
+bVBtIiA6IGZhbHNlLAogICJpc0VuYWJsZWQiIDogZmFsc2UsCiAgInNob3dTZWNvbmRzIiA6IHRy
+dWUKfQAIADEAPwBKAFMAXQB0AHsAlgCpALgAzgDdAOwA+gESASABLwFFAV0BaAHtAe8B8QHyAfkC
+bQJuAm8CcAJyAnQCgQKJApECmQK+AsYCzgLPAtAC0QLSAtMC1AM3A14DhQOsA9MD+gQhBEgEbwSW
+BL0E5AULBTIFWQWABacFzgX1BhwGQwZqBpEGuAbfBwYHLQdUB3sHogfJB/AIFwg+CGUIjAizCNoJ
+AQkoCU8JdgmdCcQJ6woSCjkKYAqHCpAKmQqiCqsKtAq9CsYKzwrYCuEK6grzCvwLBQsOCxcLIAsp
+CzILOwtEC00LVgtfC2gLcQt6C4MLjAuVC54LpwuwC7kLwgvLC9QL3QvmC+8L+AwBDAoMEwwcDCUM
+Lgw3DDgMQwxfDHIMiAyXDKYMuQzMDOQM+Q0LDSANMw1CDVANYg15DYsNnw2xDcYN3w3zDgAODw4e
+DjIOMwAAAAAAAAIBAAAAAAAAAKsAAAAAAAAAAAAAAAAAAA7v'
+
+echo -n $BASE64_CONFIG | base64 --decode > "$PROPERTY_LIST"
 
 chown -R "$CURRENT_USER" "$SETTINGS_FOLDER"
 chown $CURRENT_USER "$PROPERTY_LIST"
