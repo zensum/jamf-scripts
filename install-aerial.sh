@@ -80,11 +80,10 @@ fi
 echo "`date` | Moving $TMP_SAVER/$FILE_NAME to $SCREENSAVERS_PATH"
 mkdir -p "$SCREENSAVERS_PATH"
 mv -f "$TMP_SAVER" "$SCREENSAVERS_PATH"
+mkdir -p "/Users/$CURRENT_USER/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSaver/Data/Library/Application Support/Aerial"
 
 echo "`date` | Whitelisting $SCREENSAVER_LOCATION for GateKeeper"
 /usr/bin/xattr -r -d com.apple.quarantine "$SCREENSAVER_LOCATION"
-
-# chmod -777 "$SCREENSAVER_LOCATION"
 
 echo "`date` | Deleting zip file at $TMP_LOCATION for $APP_NAME"
 rm $TMP_LOCATION
@@ -125,7 +124,7 @@ fi
 if [ $? -eq 1 ]; then
     /usr/libexec/PlistBuddy -c "Add askForPassword bool true" $ssPlist
 else
-    /usr/libexec/PlistBuddy -c "Set askForPasswordDelay true" $ssPlist
+    /usr/libexec/PlistBuddy -c "Set askForPassword true" $ssPlist
 fi
 
 /usr/libexec/PlistBuddy -c "Print moduleDict" $ssPlist
@@ -187,7 +186,6 @@ else
         rm $PROPERTY_LIST
     fi
 fi
-
 
 echo "`date` | Writing new $APP_NAME settings"
 cat > "$PROPERTY_LIST" <<EOF
