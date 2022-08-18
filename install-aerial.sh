@@ -276,6 +276,7 @@ EOF
 
 chown -R "$CURRENT_USER" "$SETTINGS_FOLDER"
 plutil -convert binary1 "$PROPERTY_LIST"
+/usr/bin/xattr -r -d com.apple.quarantine "$PROPERTY_LIST"
 chown $CURRENT_USER "$PROPERTY_LIST"
 
 echo "`date` | Adding settings for $CURRENT_USER"
