@@ -168,8 +168,8 @@ fi
 
 chown -R $CURRENT_USER "$ssPlist"
 
-SETTINGS_FOLDER="/Users/$CURRENT_USER/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSaver/Data/Library/Preferences/ByHost"
-PROPERTY_LIST="$SETTINGS_FOLDER/com.JohnCoates.aerial.$HUUID.plist"
+SETTINGS_FOLDER="/Users/$CURRENT_USER/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSaver/Data/Library/Preferences"
+PROPERTY_LIST="$SETTINGS_FOLDER/com.glouel.Aerial.plist"
 
 if [ ! -f "$PROPERTY_LIST" ]; then
     echo "`date` | Creating empty property list at $PROPERTY_LIST"
