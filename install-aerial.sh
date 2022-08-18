@@ -1,6 +1,6 @@
 #!/bin/bash
 
-URL='https://github.com/glouel/Aerial/releases/download/v3.1.0test5'
+URL='https://github.com/JohnCoates/Aerial/releases/latest/download'
 FILE='Aerial.saver.zip'
 APP_NAME='Aerial' # assuming it's a pretty name for jamf ui
 CURRENT_USER=$( echo "show State:/Users/ConsoleUser" | scutil | awk '/Name :/ { print $3 }' )
