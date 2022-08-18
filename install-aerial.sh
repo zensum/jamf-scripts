@@ -5,7 +5,7 @@ FILE='Aerial.saver.zip'
 APP_NAME='Aerial' # assuming it's a pretty name for jamf ui
 CURRENT_USER=$( echo "show State:/Users/ConsoleUser" | scutil | awk '/Name :/ { print $3 }' )
 SCREENSAVER_FILENAME="Aerial.saver"
-SCREENSAVERS_PATH="/Users/$CURRENT_USER/Library/Screen Savers"
+SCREENSAVERS_PATH="/Library/Screen Savers"
 SCREENSAVER_LOCATION="$SCREENSAVERS_PATH/$SCREENSAVER_FILENAME"
 
 REINSTALL=""
@@ -37,7 +37,7 @@ TMP_SAVER=/tmp/Aerial.saver # this is the unzipped file
 TMP_LOCATION="$TMP_SAVER.zip"
 /usr/bin/curl -Ls "${URL}/${FILE}" -o "$TMP_LOCATION"
 
-if [ -e $TMP_LOCATION ]; then
+if [ ! -e $TMP_LOCATION ] || [ $? -ne 0 ]; then
     echo "`date` | Downloaded $APP_NAME to $TMP_LOCATION"
 else
     echo "`date` | Could not find any downloads for $APP_NAME on $TMP_LOCATION"
@@ -49,11 +49,9 @@ if [ -d $TMP_SAVER ]; then
     rm -rf $TMP_SAVER
 fi
 
-# unzip the screensaver
 unzip -q -o "$TMP_LOCATION" -d /tmp # you can remove -v to remove the debug stuff, or "tar xop " instead of unzip if your script runs very very early
-
 if [ $? -ne 0 ]; then
-    echo "`date` | Unzip failed for $APP_NAME on $TMP_LOCATION to $TMP_SAVER"
+    echo "`date` | Unzip and move failed for $APP_NAME on $TMP_LOCATION to $TMP_SAVER"
     exit 1
 fi
 
@@ -77,11 +75,13 @@ if [ -d "$SCREENSAVER_LOCATION" ]; then
     fi
 fi
 
-
 echo "`date` | Moving $TMP_SAVER/$FILE_NAME to $SCREENSAVERS_PATH"
 mkdir -p "$SCREENSAVERS_PATH"
 mv -f "$TMP_SAVER" "$SCREENSAVERS_PATH"
-chown -R $CURRENT_USER "$SCREENSAVER_LOCATION"
+mkdir -p "/Users/$CURRENT_USER/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSaver/Data/Library/Application Support/Aerial"
+
+echo "`date` | Whitelisting $SCREENSAVER_LOCATION for GateKeeper"
+/usr/bin/xattr -r -d com.apple.quarantine "$SCREENSAVER_LOCATION"
 
 echo "`date` | Deleting zip file at $TMP_LOCATION for $APP_NAME"
 rm $TMP_LOCATION
@@ -98,7 +98,7 @@ fi
 
 # macOS sometimes does not create this folder
 echo "`date` | Creating empty folder /Users/$CURRENT_USER/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSaver/Data/Library/Application\ Support/Aerial/ for cache"
-mkdir -p /Users/$CURRENT_USER/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSaver/Data/Library/Application\ Support/Aerial
+mkdir -p /Users/Shared/ScreenSaverCache
 
 echo "`date` | Added settings for $APP_NAME"
 
@@ -110,6 +110,20 @@ mkdir -p "/Users/$CURRENT_USER/Library/Preferences/ByHost"
 
 # set the screen saver for the current user to the one $SCd
 echo "`date` | Adding settings for $CURRENT_USER"
+
+/usr/libexec/PlistBuddy -c "Print askForPasswordDelay" $ssPlist
+if [ $? -eq 1 ]; then
+    /usr/libexec/PlistBuddy -c "Add askForPasswordDelay int 0" $ssPlist
+else
+    /usr/libexec/PlistBuddy -c "Set askForPasswordDelay 0" $ssPlist
+fi
+
+/usr/libexec/PlistBuddy -c "Print askForPassword" $ssPlist
+if [ $? -eq 1 ]; then
+    /usr/libexec/PlistBuddy -c "Add askForPassword bool true" $ssPlist
+else
+    /usr/libexec/PlistBuddy -c "Set askForPassword true" $ssPlist
+fi
 
 /usr/libexec/PlistBuddy -c "Print moduleDict" $ssPlist
 if [ $? -eq 1 ]; then
@@ -130,6 +144,13 @@ else
     /usr/libexec/PlistBuddy -c "Set :moduleDict:path $SCREENSAVER_LOCATION" $ssPlist
 fi
 
+/usr/libexec/PlistBuddy -c "Print moduleDict:type" $ssPlist
+if [ $? -eq 1 ]; then
+    /usr/libexec/PlistBuddy -c "Add :moduleDict:type int 0" $ssPlist
+else
+    /usr/libexec/PlistBuddy -c "Set :moduleDict:type 0" $ssPlist
+fi
+
 /usr/libexec/PlistBuddy -c "Print showClock" $ssPlist
 if [ $? -eq 1 ]; then
     /usr/libexec/PlistBuddy -c "Add showClock string NO" $ssPlist
@@ -147,7 +168,124 @@ fi
 
 chown -R $CURRENT_USER "$ssPlist"
 
+SETTINGS_FOLDER="/Users/$CURRENT_USER/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSaver/Data/Library/Preferences/ByHost"
+PROPERTY_LIST="$SETTINGS_FOLDER/com.JohnCoates.aerial.$HUUID.plist"
+
+if [ ! -f "$PROPERTY_LIST" ]; then
+    echo "`date` | Creating empty property list at $PROPERTY_LIST"
+    mkdir -p "$SETTINGS_FOLDER"
+    touch "$PROPERTY_LIST"
+else
+    if [ ! $REINSTALL ]; then
+        echo "`date` | Property list already exists at $PROPERTY_LIST"
+        exit 0
+    else
+        echo "`date` | Removing old settings at $PROPERTY_LIST"
+        rm $PROPERTY_LIST
+    fi
+fi
+
+echo "`date` | Writing new $APP_NAME settings"
+cat > "$PROPERTY_LIST" <<EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>LayerClock</key>
+	<string>{
+  "clockFormat" : 0,
+  "corner" : 3,
+  "displays" : 0,
+  "fontName" : "Helvetica Neue Medium",
+  "fontSize" : 50,
+  "hideAmPm" : false,
+  "isEnabled" : false,
+  "showSeconds" : true
+}</string>
+	<key>LayerMusic</key>
+	<string>{
+  "corner" : 2,
+  "displays" : 0,
+  "fontName" : "Helvetica Neue Medium",
+  "fontSize" : 20,
+  "isEnabled" : false
+}</string>
+	<key>cacheLimit</key>
+	<real>10</real>
+	<key>ciOverrideLanguage</key>
+	<string>sv</string>
+	<key>firstTimeSetup</key>
+	<true/>
+	<key>highQualityTextRendering</key>
+	<true/>
+	<key>darkModeNightOverride</key>
+	<true/>
+	<key>intCachePeriodicity</key>
+	<integer>1</integer>
+	<key>intVideoFormat</key>
+	<integer>3</integer>
+	<key>lastVideoCheck</key>
+	<string>2022-08-16</string>
+	<key>layers</key>
+	<string>[
+  "message",
+  "clock",
+  "date",
+  "location",
+  "battery",
+  "weather",
+  "countdown",
+  "timer",
+  "music"
+]</string>
+	<key>newShouldPlayString</key>
+	<array>
+		<string>location:Alabama</string>
+		<string>location:California</string>
+		<string>location:China</string>
+		<string>location:Dubai</string>
+		<string>location:England</string>
+		<string>location:Florida</string>
+		<string>location:Grand Canyon</string>
+		<string>location:Greenland</string>
+		<string>location:Hawaii</string>
+		<string>location:Hong Kong</string>
+		<string>location:Iceland</string>
+		<string>location:Italy</string>
+		<string>location:Liwa</string>
+		<string>location:London</string>
+		<string>location:Los Angeles</string>
+		<string>location:Nevada</string>
+		<string>location:New York</string>
+		<string>location:Oregon</string>
+		<string>location:Patagonia</string>
+		<string>location:San Francisco</string>
+		<string>location:Scotland</string>
+		<string>location:Sea</string>
+		<string>location:Space</string>
+		<string>location:Texas</string>
+		<string>location:Yosemite</string>
+	</array>
+	<key>overrideCache</key>
+	<true/>
+	<key>supportPath</key>
+	<string>/Users/Shared/ScreenSaverCache</string>
+</dict>
+</plist>
+EOF
+
+chown -R "$CURRENT_USER" "$SETTINGS_FOLDER"
+plutil -convert binary1 "$PROPERTY_LIST"
+/usr/bin/xattr -r -d com.apple.quarantine "$PROPERTY_LIST"
+chown $CURRENT_USER "$PROPERTY_LIST"
+
+echo "`date` | Adding settings for $CURRENT_USER"
+SET_SETTINGS=$(/usr/libexec/PlistBuddy -c "Print" "$PROPERTY_LIST")
+echo "`date` | Settings are now $SET_SETTINGS"
+
 # restart settings
 killall cfprefsd
+
+echo "`date` | $APP_NAME installation complete"
 
 exit 0
