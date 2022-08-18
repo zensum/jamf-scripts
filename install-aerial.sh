@@ -49,6 +49,12 @@ if [ -d $TMP_SAVER ]; then
     rm -rf $TMP_SAVER
 fi
 
+unzip -q -o "$TMP_LOCATION" -d /tmp # you can remove -v to remove the debug stuff, or "tar xop " instead of unzip if your script runs very very early
+if [ $? -ne 0 ]; then
+    echo "`date` | Unzip and move failed for $APP_NAME on $TMP_LOCATION to $TMP_SAVER"
+    exit 1
+fi
+
 if [ -d "$SCREENSAVER_LOCATION" ]; then
     LATEST_VERSION=$(plutil -p "$TMP_SAVER/Contents/Info.plist" | grep CFBundleShortVersionString | awk '{print $3}' | sed 's/[^0-9\.]*//g')
     if [ $? -ne 0 ]; then
@@ -67,14 +73,6 @@ if [ -d "$SCREENSAVER_LOCATION" ]; then
         echo "`date` | Removing old version of $APP_NAME at $SCREENSAVER_LOCATION"
         rm -rf "$SCREENSAVER_LOCATION"
     fi
-fi
-
-
-
-unzip -q -o "$TMP_LOCATION" -d /tmp # you can remove -v to remove the debug stuff, or "tar xop " instead of unzip if your script runs very very early
-if [ $? -ne 0 ]; then
-    echo "`date` | Unzip and move failed for $APP_NAME on $TMP_LOCATION to $TMP_SAVER"
-    exit 1
 fi
 
 echo "`date` | Moving $TMP_SAVER/$FILE_NAME to $SCREENSAVERS_PATH"
@@ -277,6 +275,7 @@ cat > "$PROPERTY_LIST" <<EOF
 EOF
 
 chown -R "$CURRENT_USER" "$SETTINGS_FOLDER"
+plutil -convert binary1 "$PROPERTY_LIST"
 chown $CURRENT_USER "$PROPERTY_LIST"
 
 echo "`date` | Adding settings for $CURRENT_USER"
