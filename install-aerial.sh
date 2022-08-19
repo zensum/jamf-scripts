@@ -5,7 +5,7 @@ FILE='Aerial.saver.zip'
 APP_NAME='Aerial' # assuming it's a pretty name for jamf ui
 CURRENT_USER=$( echo "show State:/Users/ConsoleUser" | scutil | awk '/Name :/ { print $3 }' )
 SCREENSAVER_FILENAME="Aerial.saver"
-SCREENSAVERS_PATH="/Library/Screen Savers"
+SCREENSAVERS_PATH="/Users/$CURRENT_USER/Library/Screen Savers"
 SCREENSAVER_LOCATION="$SCREENSAVERS_PATH/$SCREENSAVER_FILENAME"
 
 REINSTALL=""
