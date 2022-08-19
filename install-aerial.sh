@@ -80,6 +80,8 @@ mkdir -p "$SCREENSAVERS_PATH"
 mv -f "$TMP_SAVER" "$SCREENSAVERS_PATH"
 mkdir -p "/Users/$CURRENT_USER/Library/Containers/com.apple.ScreenSaver.Engine.legacyScreenSaver/Data/Library/Application Support/Aerial"
 
+chown -R $CURRENT_USER "$SCREENSAVER_LOCATION"
+
 echo "`date` | Whitelisting $SCREENSAVER_LOCATION for GateKeeper"
 /usr/bin/xattr -r -d com.apple.quarantine "$SCREENSAVER_LOCATION"
 
