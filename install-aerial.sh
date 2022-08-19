@@ -113,9 +113,9 @@ echo "`date` | Adding settings for $CURRENT_USER"
 
 /usr/libexec/PlistBuddy -c "Print askForPasswordDelay" $ssPlist
 if [ $? -eq 1 ]; then
-    /usr/libexec/PlistBuddy -c "Add askForPasswordDelay int 0" $ssPlist
+    /usr/libexec/PlistBuddy -c "Add askForPasswordDelay Integer 5" $ssPlist
 else
-    /usr/libexec/PlistBuddy -c "Set askForPasswordDelay 0" $ssPlist
+    /usr/libexec/PlistBuddy -c "Set askForPasswordDelay 5" $ssPlist
 fi
 
 /usr/libexec/PlistBuddy -c "Print askForPassword" $ssPlist
@@ -146,7 +146,7 @@ fi
 
 /usr/libexec/PlistBuddy -c "Print moduleDict:type" $ssPlist
 if [ $? -eq 1 ]; then
-    /usr/libexec/PlistBuddy -c "Add :moduleDict:type int 0" $ssPlist
+    /usr/libexec/PlistBuddy -c "Add :moduleDict:type Integer 0" $ssPlist
 else
     /usr/libexec/PlistBuddy -c "Set :moduleDict:type 0" $ssPlist
 fi
@@ -161,7 +161,7 @@ fi
 /usr/libexec/PlistBuddy -c "Print idleTime" $ssPlist
 if [ $? -eq 1 ]; then
     # 300 seconds = 5 minutes
-    /usr/libexec/PlistBuddy -c "Add idleTime int 300" $ssPlist
+    /usr/libexec/PlistBuddy -c "Add idleTime Integer 300" $ssPlist
 else
     /usr/libexec/PlistBuddy -c "Set idleTime 300" $ssPlist
 fi
