@@ -43,5 +43,5 @@ if __name__ == '__main__':
     import sys
     scheme = sys.argv[4]
     app = sys.argv[5]
-    print("Setting default handler for scheme {} to app {}".format(scheme, app))
+    print("Setting default handler for scheme {} to app {}".format(scheme, app))  # noqa: E501
     set_default_scheme(scheme, app)
