@@ -17,7 +17,8 @@ fi
 heading="Du kommer nu påböja installationen av macOS Ventura..."
 description="
 
-Denna proceess tar vanligtvis 20-30 minuter
+Denna proceess tar vanligtvis 30-40 minuter och kan inte avbrytas.
+Du kommer behöva ange ditt lösenord flera gånger för att installationen ska kunna slutföras.
 
 När processen är färdig kommer din dator starta om och behöva ytterligare 15-20 minuter för installation."
 icon="$install_macos_app/Contents/Resources/InstallAssistant.icns"
