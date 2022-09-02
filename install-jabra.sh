@@ -311,8 +311,11 @@ elif [[ "$PKGExitCode" == 0 ]]; then
     fi
 
     # Delete the DMG
-    /bin/rm /Library/Application\ Support/JAMF/Waiting\ Room/$dmgName
-
+    if [ "$6" != "" ]; then
+        /bin/rm $dmgName
+    else
+        /bin/rm /Library/Application\ Support/JAMF/Waiting\ Room/$dmgName
+    fi
     exit 0
 
 else
@@ -336,8 +339,11 @@ else
         log "Successfully unmounted"
     fi
 
-    # Delete the DMG
-    /bin/rm /Library/Application\ Support/JAMF/Waiting\ Room/$dmgName
+    if [ "$6" != "" ]; then
+        /bin/rm $dmgName
+    else
+        /bin/rm /Library/Application\ Support/JAMF/Waiting\ Room/$dmgName
+    fi
 
     exit 1
 fi
