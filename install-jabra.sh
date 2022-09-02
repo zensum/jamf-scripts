@@ -133,11 +133,11 @@ if [ "$3" != "" ] && [ "$userName" == "" ]; then
     userName="$3"
 fi
 
-if [ "$4" != "" ] && [ "$dmgName" == "" ]; then
+if [ "$4" != "" ] && [ "$4" != "-" ] && [ "$dmgName" == "" ]; then
     dmgName="$4"
 fi
 
-if [ "$5" != "" ] && [ "$forcesuccessflag" == "" ]; then
+if [ "$5" != "" ] && [ "$5" != "NO" ] && [ "$forcesuccessflag" == "" ]; then
     forcesuccessflag="$5"
 fi
 
