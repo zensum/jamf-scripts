@@ -157,7 +157,12 @@ log () {
 #
 ####################################################################################################
 
-log "installPKGfromDMG.sh"
+log $1
+log $2
+log $3
+log $4
+log $5
+log $6
 
 verifyVariable () {
 eval variableValue=\$$1
