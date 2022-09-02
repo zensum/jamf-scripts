@@ -259,7 +259,7 @@ fi
 
 # Install the PKG wrapped inside the DMG
 log "Installing Package $packageName from mount path $mountVolume..."
-/usr/local/jamf/bin/jamf install -path $mountVolume -package $packageName
+/usr/local/jamf/bin/jamf install -path "$mountVolume" -package "$packageName"
 
 PKGExitCode=($?)
 
