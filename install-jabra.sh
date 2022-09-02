@@ -183,10 +183,6 @@ if [ "$6" != "" ]; then
     log "Downloaded installer disk image to $dmgName"
 fi
 
-if [ ! -e "$dmgName" ]; then
-    log "No installer disk image found. Please pass in a dmgName or downloadURL to install."
-    exit 1
-fi
 
 ####################################################################################################
 #
