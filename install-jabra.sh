@@ -250,7 +250,12 @@ elif [[ $mountDeviceExitCode != 0 ]] ; then
 fi
 
 # Find the PKG in the DMG
-packageName=`ls $mountVolume | grep "\.pkg$"`
+packageName=`ls "$mountVolume" | grep "\.pkg$"`
+
+if [ ! -e "$mountVolume/$packageName" ]; then
+    log "Could not find a package in the DMG."
+    exit 1
+fi
 
 # Install the PKG wrapped inside the DMG
 log "Installing Package $packageName from mount path $mountVolume..."
