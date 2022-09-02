@@ -226,7 +226,7 @@ fi
 
 mountResultExitCode=($?)
 # mountVolume
-mountVolume=`echo "$mountResult" | grep Volumes | awk '{print $3}'`
+mountVolume=`echo "$mountResult" | grep Volumes | sed 's/.*\/Volumes\//\/Volumes\//'`
 mountVolumeExitCode=($?)
 # mountDevice
 mountDevice=`echo "$mountResult" | grep disk | head -1 | awk '{print $1}'`
@@ -250,7 +250,7 @@ elif [[ $mountDeviceExitCode != 0 ]] ; then
 fi
 
 # Find the PKG in the DMG
-packageName=`ls $mountVolume | grep "pkg"`
+packageName=`ls $mountVolume | grep "\.pkg$"`
 
 # Install the PKG wrapped inside the DMG
 log "Installing Package $packageName from mount path $mountVolume..."
