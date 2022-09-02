@@ -216,7 +216,12 @@ fi
 # Mount the DMG
 log "Mounting the DMG $dmgName..."
 # mountResult
-mountResult=`/usr/bin/hdiutil mount -private -noautoopen -noverify /Library/Application\ Support/JAMF/Waiting\ Room/$dmgName -shadow`
+if [ "$6" != "" ]; then
+    mountResult=`/usr/bin/hdiutil mount -private -noautoopen -noverify $dmgName -shadow`
+else
+    mountResult=`/usr/bin/hdiutil mount -private -noautoopen -noverify /Library/Application\ Support/JAMF/Waiting\ Room/$dmgName -shadow`
+fi
+
 mountResultExitCode=($?)
 # mountVolume
 mountVolume=`echo "$mountResult" | grep Volumes | awk '{print $3}'`
