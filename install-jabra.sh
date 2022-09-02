@@ -180,6 +180,7 @@ if [ "$6" != "" ]; then
         exit 1
     fi
     dmgName=$tmpLocation
+    log "Downloaded installer disk image to $dmgName"
 fi
 
 if [ ! -e "$dmgName" ]; then
