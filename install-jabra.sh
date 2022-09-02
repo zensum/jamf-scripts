@@ -169,18 +169,23 @@ else
 fi
 }
 
-downloadURL="https://jabraxpressonlineprdstor.blob.core.windows.net/jdo/JabraDirectSetup.dmg"
 
-tmpLocation=/tmp/jabraDirectSetup.dmg
-log "Downloading installer disk image from $downloadURL"
-curl $downloadURL -L -o $tmpLocation
-if [ $? -ne 0 ]; then
-    log "Error downloading installer disk image from $downloadURL"
-    exit 1
+if [ "$6" != "" ]; then
+    downloadURL=$6
+    tmpLocation=/tmp/jabraDirectSetup.dmg
+    log "Downloading installer disk image from $downloadURL"
+    curl $downloadURL -L -o $tmpLocation
+    if [ $? -ne 0 ]; then
+        log "Error downloading installer disk image from $downloadURL"
+        exit 1
+    fi
+    dmgName=$tmpLocation
 fi
 
-dmgName=$tmpLocation
-
+if [ ! -e "$dmgName" ]; then
+    log "No installer disk image found. Please pass in a dmgName or downloadURL to install."
+    exit 1
+fi
 
 ####################################################################################################
 #
