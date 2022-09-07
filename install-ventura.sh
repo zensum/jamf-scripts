@@ -18,15 +18,18 @@ heading="Du kommer nu påböja installationen av macOS Ventura..."
 description="
 
 Denna proceess tar vanligtvis 30-40 minuter och kan inte avbrytas.
-Du kommer behöva ange ditt lösenord flera gånger för att installationen ska kunna slutföras.
+Du kommer behöva ange ditt lösenord flera gånger för att installationen ska kunna påbörjas och sedan slutföras.
 
-När processen är färdig kommer din dator starta om och behöva ytterligare 15-20 minuter för installation."
+När processen är färdig kommer din dator starta om och behöva ytterligare 15-20 minuter för att slutföra installationen.
+
+Detta meddelande försvinner efter 40 sekunder.
+"
 icon="$install_macos_app/Contents/Resources/InstallAssistant.icns"
 
 ##Launch jamfHelper
 "/Library/Application Support/JAMF/bin/jamfHelper.app/Contents/MacOS/jamfHelper" -windowType fs -title "" -icon "$icon" -heading "$heading" -description "$description" &
 jamfHelperPID=$!
-sleep 20
+sleep 40
 kill $jamfHelperPID
 
 
