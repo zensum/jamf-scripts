@@ -7,7 +7,7 @@ echo "`date` | Running Telavox installer with args $@"
 
 FORCE=0
 
-if [ "$4" == "--force" ]; then
+if [[ "$4" == "--force" ]]; then
     echo "`date` | Forcing install"
     FORCE=1
 fi
