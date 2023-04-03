@@ -13,8 +13,6 @@ gateway=`ifconfig | grep -A 1 POINTOPOINT | grep -A 1 $interface | grep -E "inet
 
 
 addresses=()
-addresses+=("35.204.118.71") # add reports
-addresses+=("195.238.77.196") # callmaker_sftp_server
 addresses+=(`nslookup api.zensum.se | grep "Address: " | awk {'print $2'}`) # Sverker SE
 addresses+=(`nslookup a.zensum.se | grep "Address: " | awk {'print $2'}`) # Freja SE
 addresses+=(`nslookup api.zensum.no | grep "Address: " | awk {'print $2'}`) # Sverker NO

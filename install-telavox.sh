@@ -3,6 +3,14 @@
 TELAVOX_URL='https://deopappmanager.telavox.com/flow/download/mac/latest'
 APP_LOCATION=/Applications/Telavox.app
 
+echo "`date` | Running Telavox installer with args $@"
+
+FORCE=0
+
+if [[ "$4" == "--force" ]]; then
+    echo "`date` | Forcing install"
+    FORCE=1
+fi
 
 echo "`date` | Fetching Telavox version from $TELAVOX_URL"
 DOWNLOAD_URL=$(curl $TELAVOX_URL -i | grep Location: | awk {'print $2'})
@@ -17,7 +25,9 @@ if [ -e $APP_LOCATION ]; then
     echo "`date` | Installed version is $CURRENT_VERSION at $APP_LOCATION"
     if [[ "$LATEST_VERSION" == "$CURRENT_VERSION" ]]; then
         echo "`date` | Already on the latest version"
-        exit 0
+        if [[ $FORCE == 0 ]]; then
+            exit 0
+        fi
     fi
 else
     echo "`date` | No installation found"
