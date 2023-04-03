@@ -25,7 +25,7 @@ if [ -e $APP_LOCATION ]; then
     echo "`date` | Installed version is $CURRENT_VERSION at $APP_LOCATION"
     if [[ "$LATEST_VERSION" == "$CURRENT_VERSION" ]]; then
         echo "`date` | Already on the latest version"
-        if [[ $FORCE != 0 ]]; then
+        if [[ $FORCE == 0 ]]; then
             exit 0
         fi
     fi
