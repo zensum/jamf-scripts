@@ -35,7 +35,7 @@ else
     echo "`date` | No installation found"
 fi
 
-TMP_LOCATION=/tmp/telavox.dmg
+TMP_LOCATION=/private/var/tmp/telavox.dmg
 echo "`date` | Downloading installer disk image from $DOWNLOAD_URL"
 curl $TELAVOX_URL -L -o $TMP_LOCATION
 
@@ -84,7 +84,8 @@ chown -R root:wheel $APP_LOCATION
 chmod -R 755 $APP_LOCATION
 
 echo "`date` | Adding quarantine exception for $APP_LOCATION"
-spctl --add $APP_LOCATION
+spctl --add --label "Telavox" $APP_LOCATION
+# chmod +x /Applications/Telavox.app/Contents/MacOS/Telavox || echo
 
 echo "`date` | Unmounting disk image"
 hdiutil detach $(df | grep Telavox | awk '{print $1}') -quiet
