@@ -26,8 +26,10 @@ if [ -e $APP_LOCATION ]; then
     if [[ "$LATEST_VERSION" == "$CURRENT_VERSION" ]]; then
         echo "`date` | Already on the latest version"
         if [[ $FORCE == 0 ]]; then
+            echo "`date` | Not forcing install, exiting"
             exit 0
         fi
+        echo "`date` | Forcing install"
     fi
 else
     echo "`date` | No installation found"
@@ -80,6 +82,9 @@ cp -r "$MOUNT_NAME/Telavox.app" /Applications/
 echo "`date` | Changing permissions on $APP_LOCATION"
 chown -R root:wheel $APP_LOCATION
 chmod -R 755 $APP_LOCATION
+
+echo "`date` | Adding quarantine exception for $APP_LOCATION"
+spctl --add $APP_LOCATION
 
 echo "`date` | Unmounting disk image"
 hdiutil detach $(df | grep Telavox | awk '{print $1}') -quiet
