@@ -77,7 +77,7 @@ echo "`date` | Removing old app at $APP_LOCATION."
 rm -rf $APP_LOCATION
 
 echo "`date` | Copying app to $APP_LOCATION"
-cp -r "$MOUNT_NAME/Telavox.app" /Applications/
+cp -af "$MOUNT_NAME/Telavox.app" /Applications/
 
 echo "`date` | Changing permissions on $APP_LOCATION"
 chown -R root:wheel $APP_LOCATION
