@@ -61,10 +61,10 @@ dockutil --add "/System/Applications/Notes.app" --after Calculator --no-restart 
 
 dockutil --add "/System/Applications/Calendar.app" --after Notes --no-restart --allhomes
 
-if [ -d "/Applications/Filemaker Pro 16/Filemaker Pro.app" ] ; then
-	dockutil --add "/Applications/Filemaker Pro 16/Filemaker Pro.app" --after Slack --no-restart --allhomes
+if [ -d "/Applications/dialmaker-electron.app" ] ; then
+	dockutil --add "/Applications/dialmaker-electron.app" --after Slack --no-restart --allhomes
 else
-	echo "Filemaker not installed, skipping Dock placement"
+	echo "Dialmaker not installed, skipping Dock placement"
 fi
 
 dockutil --add "/Applications/Zensum App Store.app" --no-restart --position 100 --allhomes
