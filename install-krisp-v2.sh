@@ -3,7 +3,7 @@
 APP_LOCATION=/Applications/Krisp.app
 case "$(arch)" in
   arm64)
-    KRISP_URL='https://api.krisp.ai/v2/download/mac/enterprise/latest?arm=0'
+    KRISP_URL='https://api.krisp.ai/v2/download/mac/enterprise/latest?arm=1'
     ;;
 
   i386)
