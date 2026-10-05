@@ -1,22 +1,27 @@
 #!/bin/bash
 
 # Installs a pinned Telavox version instead of latest.
-# Jamf params: $4 = --force (optional), $5 = version (optional, default 2.5.0)
+# Jamf params (any position): --force, and a version like 2.5.1 (default 2.5.0).
+# Args are scanned instead of read by position, because Jamf can split a
+# computer name with spaces into several args and shift $4/$5.
 
-VERSION="${5:-2.5.0}"
+VERSION=2.5.0
+FORCE=0
+for ARG in "$@"; do
+    if [[ "$ARG" == "--force" ]]; then
+        FORCE=1
+    elif [[ "$ARG" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+        VERSION="$ARG"
+    fi
+done
+
 DOWNLOAD_URL="https://s3.eu-west-2.amazonaws.com/flow-desktop/Telavox-$VERSION.dmg"
 APP_LOCATION=/Applications/Telavox.app
 TMP_LOCATION=/private/var/tmp/telavox-$VERSION.dmg
 MOUNT_POINT=/private/var/tmp/telavox-mount
 
 echo "`date` | Running pinned version Telavox installer with args $@"
-
-FORCE=0
-
-if [[ "$4" == "--force" ]]; then
-    echo "`date` | Forcing install"
-    FORCE=1
-fi
+echo "`date` | Pinned version is $VERSION, force is $FORCE"
 
 if [ -e $APP_LOCATION ]; then
     CURRENT_VERSION=$(defaults read "$APP_LOCATION/Contents/Info" CFBundleShortVersionString)
