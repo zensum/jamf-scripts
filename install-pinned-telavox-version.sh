@@ -9,7 +9,7 @@ APP_LOCATION=/Applications/Telavox.app
 TMP_LOCATION=/private/var/tmp/telavox-$VERSION.dmg
 MOUNT_POINT=/private/var/tmp/telavox-mount
 
-echo "`date` | Running fixed version Telavox installer with args $@"
+echo "`date` | Running pinned version Telavox installer with args $@"
 
 FORCE=0
 
