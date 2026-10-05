@@ -1,16 +1,12 @@
 #!/bin/bash
 
 # Installs a pinned Telavox version instead of latest.
-# Jamf param: --force (any position). Not read from $4, because Jamf can split
-# a computer name with spaces into several args and shift the positions.
+# Settings are hardcoded, not read from Jamf args, because Jamf can split a
+# computer name with spaces into several args and shift the positions.
+# FORCE=1 reinstalls even when VERSION is already installed.
 
 VERSION=2.5.0
-FORCE=0
-for ARG in "$@"; do
-    if [[ "$ARG" == "--force" ]]; then
-        FORCE=1
-    fi
-done
+FORCE=1
 
 DOWNLOAD_URL="https://s3.eu-west-2.amazonaws.com/flow-desktop/Telavox-$VERSION.dmg"
 APP_LOCATION=/Applications/Telavox.app
