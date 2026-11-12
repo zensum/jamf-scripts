@@ -1,15 +1,37 @@
 #!/bin/bash
 
+# Installs the latest Telavox release.
+# Jamf parameters, in any of the parameter fields and in any order:
+#   --force           Reinstall even when the latest version is already installed.
+#   --delay-days=N    Upgrade an installed Telavox only once the latest release is
+#                     N days old, counted from the Last-Modified date of Telavox's
+#                     disk image. A computer without Telavox installs right away.
+#                     The policy must run on a recurring trigger so it retries.
+# Parameters are matched by name, not position, because Jamf can split a computer
+# name with spaces into several args and shift the positions.
+
 TELAVOX_URL='https://deopappmanager.telavox.com/flow/download/mac/latest'
 APP_LOCATION=/Applications/Telavox.app
 
 echo "`date` | Running Telavox installer with args $@"
 
 FORCE=0
+DELAY_DAYS=0
 
-if [[ "$4" == "--force" ]]; then
+for ARG in "$@"; do
+    case "$ARG" in
+        --force) FORCE=1 ;;
+        --delay-days=*) DELAY_DAYS="${ARG#--delay-days=}" ;;
+    esac
+done
+
+if [[ $FORCE == 1 ]]; then
     echo "`date` | Forcing install"
-    FORCE=1
+fi
+
+if ! [[ "$DELAY_DAYS" =~ ^[0-9]+$ ]]; then
+    echo "`date` | Invalid --delay-days value '$DELAY_DAYS', expected a whole number of days"
+    exit 1
 fi
 
 echo "`date` | Fetching Telavox version from $TELAVOX_URL"
@@ -30,6 +52,21 @@ if [ -e $APP_LOCATION ]; then
             exit 0
         fi
         echo "`date` | Forcing install"
+    fi
+
+    if [[ "$LATEST_VERSION" != "$CURRENT_VERSION" && $DELAY_DAYS -gt 0 ]]; then
+        LAST_MODIFIED=$(curl -sIL $TELAVOX_URL | awk 'tolower($1)=="last-modified:"' | tail -1 | cut -d' ' -f2- | tr -d '\r')
+        RELEASED_AT=$(LC_ALL=C /bin/date -j -u -f '%a, %d %b %Y %H:%M:%S GMT' "$LAST_MODIFIED" +%s 2>/dev/null)
+        if [ -z "$RELEASED_AT" ]; then
+            echo "`date` | Could not read release date from Last-Modified '$LAST_MODIFIED', not upgrading"
+            exit 1
+        fi
+        INSTALL_AFTER=$((RELEASED_AT + DELAY_DAYS * 86400))
+        echo "`date` | Version $LATEST_VERSION was released `/bin/date -r $RELEASED_AT`, delay is $DELAY_DAYS days"
+        if [ "$(/bin/date +%s)" -lt "$INSTALL_AFTER" ]; then
+            echo "`date` | Not upgrading before `/bin/date -r $INSTALL_AFTER`, exiting"
+            exit 0
+        fi
     fi
 else
     echo "`date` | No installation found"
